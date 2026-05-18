@@ -1,0 +1,343 @@
+{% extends "layout_base.html" %}
+
+{% block title %}Training Modules — DGD CONSULT AU{% endblock %}
+
+{% block content %}
+
+<section class="section section-navy" style="padding-top: var(--space-32);">
+    <div class="section-container">
+        <div class="section-header">
+            <span class="section-label">Professional Development</span>
+            <h2 class="section-title">Nationally Recognized Training</h2>
+            <p class="section-desc">Certifications that meet Australian industry standards and open employment doors.</p>
+        </div>
+    </div>
+</section>
+
+<section class="section section-alt">
+    <div class="section-container">
+        <div class="grid grid-3">
+            <div class="course-card">
+                <div class="course-header" style="background: linear-gradient(135deg, #fef3c7, #fde68a);">
+                    <div class="course-badge">Most Popular</div>
+                    <div class="course-icon">🍷</div>
+                </div>
+                <div class="course-body">
+                    <h3 class="course-title">RSA + RCG Bundle</h3>
+                    <p class="course-desc">Responsible Service of Alcohol and Responsible Conduct of Gambling. Essential for all hospitality roles in NSW.</p>
+                    
+                    <div class="course-meta">
+                        <div class="course-meta-item">
+                            <span class="course-meta-label">Duration</span>
+                            <span class="course-meta-value">1 Day</span>
+                        </div>
+                        <div class="course-meta-item">
+                            <span class="course-meta-label">Delivery</span>
+                            <span class="course-meta-value">Online / In-Person</span>
+                        </div>
+                        <div class="course-meta-item">
+                            <span class="course-meta-label">Certificate</span>
+                            <span class="course-meta-value">NSW Interim</span>
+                        </div>
+                    </div>
+                    
+                    <div class="course-price">
+                        <span class="course-price-amount">$120</span>
+                        <span class="course-price-note">AUD incl. GST</span>
+                    </div>
+                    
+                    <a href="{{ url_for('public.register_public') }}" class="btn btn-primary btn-block">Enroll Now</a>
+                </div>
+            </div>
+            
+            <div class="course-card">
+                <div class="course-header" style="background: linear-gradient(135deg, #fee2e2, #fecaca);">
+                    <div class="course-icon">⛑️</div>
+                </div>
+                <div class="course-body">
+                    <h3 class="course-title">White Card (CPCCWHS1001)</h3>
+                    <p class="course-desc">Prepare to Work Safely in the Construction Industry. Mandatory for all construction sites nationwide.</p>
+                    
+                    <div class="course-meta">
+                        <div class="course-meta-item">
+                            <span class="course-meta-label">Duration</span>
+                            <span class="course-meta-value">6 Hours</span>
+                        </div>
+                        <div class="course-meta-item">
+                            <span class="course-meta-label">Delivery</span>
+                            <span class="course-meta-value">In-Person / Online</span>
+                        </div>
+                        <div class="course-meta-item">
+                            <span class="course-meta-label">Valid</span>
+                            <span class="course-meta-value">All States</span>
+                        </div>
+                    </div>
+                    
+                    <div class="course-price">
+                        <span class="course-price-amount">$85</span>
+                        <span class="course-price-note">AUD incl. GST</span>
+                    </div>
+                    
+                    <a href="{{ url_for('public.register_public') }}" class="btn btn-primary btn-block">Enroll Now</a>
+                </div>
+            </div>
+            
+            <div class="course-card">
+                <div class="course-header" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe);">
+                    <div class="course-badge">High Demand</div>
+                    <div class="course-icon">👵</div>
+                </div>
+                <div class="course-body">
+                    <h3 class="course-title">Aged Care Cert III (CHC33015)</h3>
+                    <p class="course-desc">Individual Support specialization in Ageing. Australia's fastest-growing employment sector.</p>
+                    
+                    <div class="course-meta">
+                        <div class="course-meta-item">
+                            <span class="course-meta-label">Duration</span>
+                            <span class="course-meta-value">12-24 Weeks</span>
+                        </div>
+                        <div class="course-meta-item">
+                            <span class="course-meta-label">Delivery</span>
+                            <span class="course-meta-value">Blended / Workplace</span>
+                        </div>
+                        <div class="course-meta-item">
+                            <span class="course-meta-label">Practicum</span>
+                            <span class="course-meta-value">120 Hours</span>
+                        </div>
+                    </div>
+                    
+                    <div class="course-price">
+                        <span class="course-price-amount">$1,200</span>
+                        <span class="course-price-note">From AUD. Subsidies available</span>
+                    </div>
+                    
+                    <a href="{{ url_for('public.register_public') }}" class="btn btn-primary btn-block">Enroll Now</a>
+                </div>
+            </div>
+            
+            <div class="course-card">
+                <div class="course-header" style="background: linear-gradient(135deg, #dcfce7, #bbf7d0);">
+                    <div class="course-icon">📝</div>
+                </div>
+                <div class="course-body">
+                    <h3 class="course-title">IELTS Preparation</h3>
+                    <p class="course-desc">Intensive coaching for Academic and General Training modules. Target band 6.0–8.0+ for visa requirements.</p>
+                    
+                    <div class="course-meta">
+                        <div class="course-meta-item">
+                            <span class="course-meta-label">Duration</span>
+                            <span class="course-meta-value">4-12 Weeks</span>
+                        </div>
+                        <div class="course-meta-item">
+                            <span class="course-meta-label">Delivery</span>
+                            <span class="course-meta-value">Online / Hybrid</span>
+                        </div>
+                        <div class="course-meta-item">
+                            <span class="course-meta-label">Mock Tests</span>
+                            <span class="course-meta-value">Weekly</span>
+                        </div>
+                    </div>
+                    
+                    <div class="course-price">
+                        <span class="course-price-amount">$450</span>
+                        <span class="course-price-note">From AUD. Intensive packages available</span>
+                    </div>
+                    
+                    <a href="{{ url_for('public.register_public') }}" class="btn btn-primary btn-block">Enroll Now</a>
+                </div>
+            </div>
+            
+            <div class="course-card">
+                <div class="course-header" style="background: linear-gradient(135deg, #f3e8ff, #e9d5ff);">
+                    <div class="course-icon">🎯</div>
+                </div>
+                <div class="course-body">
+                    <h3 class="course-title">PTE Academic Coaching</h3>
+                    <p class="course-desc">Computer-based test preparation with AI-scoring simulation. Faster results than IELTS for visa applications.</p>
+                    
+                    <div class="course-meta">
+                        <div class="course-meta-item">
+                            <span class="course-meta-label">Duration</span>
+                            <span class="course-meta-value">2-8 Weeks</span>
+                        </div>
+                        <div class="course-meta-item">
+                            <span class="course-meta-label">Delivery</span>
+                            <span class="course-meta-value">Online / Lab</span>
+                        </div>
+                        <div class="course-meta-item">
+                            <span class="course-meta-label">Simulations</span>
+                            <span class="course-meta-value">Daily</span>
+                        </div>
+                    </div>
+                    
+                    <div class="course-price">
+                        <span class="course-price-amount">$390</span>
+                        <span class="course-price-note">From AUD. Express packages available</span>
+                    </div>
+                    
+                    <a href="{{ url_for('public.register_public') }}" class="btn btn-primary btn-block">Enroll Now</a>
+                </div>
+            </div>
+            
+            <div class="course-card">
+                <div class="course-header" style="background: linear-gradient(135deg, #ffedd5, #fed7aa);">
+                    <div class="course-icon">🩹</div>
+                </div>
+                <div class="course-body">
+                    <h3 class="course-title">First Aid (HLTAID011)</h3>
+                    <p class="course-desc">Provide First Aid certification. Required for childcare, aged care, construction, and community services roles.</p>
+                    
+                    <div class="course-meta">
+                        <div class="course-meta-item">
+                            <span class="course-meta-label">Duration</span>
+                            <span class="course-meta-value">1 Day</span>
+                        </div>
+                        <div class="course-meta-item">
+                            <span class="course-meta-label">Delivery</span>
+                            <span class="course-meta-value">In-Person</span>
+                        </div>
+                        <div class="course-meta-item">
+                            <span class="course-meta-label">Valid</span>
+                            <span class="course-meta-value">3 Years</span>
+                        </div>
+                    </div>
+                    
+                    <div class="course-price">
+                        <span class="course-price-amount">$145</span>
+                        <span class="course-price-note">AUD incl. GST</span>
+                    </div>
+                    
+                    <a href="{{ url_for('public.register_public') }}" class="btn btn-primary btn-block">Enroll Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-blue">
+    <div class="section-container text-center">
+        <h2 class="section-title" style="margin-bottom: var(--space-6);">Corporate Training Packages</h2>
+        <p class="section-desc" style="margin-bottom: var(--space-10); max-width: 600px; margin-left: auto; margin-right: auto;">
+            Need bulk certification for your workforce? We deliver on-site training for teams of 10–500+ with custom scheduling and reporting.
+        </p>
+        <a href="{{ url_for('public.register_public') }}" class="btn btn-xl" style="background: white; color: var(--blue-900);">Request Corporate Quote →</a>
+    </div>
+</section>
+
+<style>
+.course-card {
+    background: white;
+    border-radius: var(--radius-2xl);
+    border: 1px solid var(--color-border-light);
+    overflow: hidden;
+    transition: all var(--transition-base);
+    display: flex;
+    flex-direction: column;
+}
+
+.course-card:hover {
+    box-shadow: var(--shadow-xl);
+    transform: translateY(-6px);
+    border-color: var(--blue-200);
+}
+
+.course-header {
+    padding: var(--space-8);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 140px;
+}
+
+.course-badge {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-4);
+    padding: var(--space-1) var(--space-3);
+    background: var(--navy-950);
+    color: white;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    border-radius: var(--radius-full);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.course-icon {
+    font-size: var(--text-5xl);
+    line-height: 1;
+}
+
+.course-body {
+    padding: var(--space-6);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.course-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--navy-950);
+    margin-bottom: var(--space-3);
+}
+
+.course-desc {
+    font-size: var(--text-sm);
+    color: var(--color-text-light);
+    line-height: 1.6;
+    margin-bottom: var(--space-6);
+    flex: 1;
+}
+
+.course-meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+    padding: var(--space-4);
+    background: var(--slate-50);
+    border-radius: var(--radius-lg);
+}
+
+.course-meta-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--text-sm);
+}
+
+.course-meta-label {
+    color: var(--color-text-muted);
+}
+
+.course-meta-value {
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.course-price {
+    margin-bottom: var(--space-4);
+    text-align: center;
+}
+
+.course-price-amount {
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    color: var(--blue-600);
+    line-height: 1;
+}
+
+.course-price-note {
+    display: block;
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    margin-top: var(--space-1);
+}
+
+.btn-block {
+    width: 100%;
+}
+</style>
+
+{% endblock %}

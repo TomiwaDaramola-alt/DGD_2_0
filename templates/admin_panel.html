@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Tower — DGD MASTER DATABASE CONTROL TOWER</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --surface: #0a0a0a;
+            --surface-raised: #121212;
+            --surface-card: #171717;
+            --border: #262626;
+            --border-focus: #404040;
+            --text: #fafafa;
+            --text-muted: #a3a3a3;
+            --text-dim: #525252;
+            --purple: #7c3aed;
+            --purple-light: #a855f7;
+            --pink: #ec4899;
+            --green: #22c55e;
+            --green-hover: #16a34a;
+            --blue: #3b82f6;
+            --orange: #f97316;
+            --danger: #ef4444;
+            --radius: 14px;
+            --radius-sm: 10px;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-sans: 'Inter', sans-serif;
+        }
+        
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Scrollbar styles for dark terminal aesthetic */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-dim);
+        }
+
+        /* Header / Top Control Bar */
+        .topbar {
+            background: var(--surface-raised);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: var(--font-mono);
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 0 16px rgba(124,58,237,0.3);
+        }
+
+        .brand-text span {
+            background: linear-gradient(to right, #ffffff, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .user-name {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            background: var(--surface);
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(34,197,94,0.5);
+            animation: statusPulse 2s infinite;
+        }
+        
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.9); }
+        }
+        
+        .btn-logout {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 600;
+            font-family: var(--font-mono);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .btn-logout:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+            background: rgba(239,68,68,0.05);
+            box-shadow: 0 0 12px rgba(239,68,68,0.1);
+        }
+        
+        /* Master Architecture Layout */
+        .layout {
+            display: flex;
+            min-height: calc(100vh - 64px);
+            width: 100%;
+        }
+        
+        /* Sidebar Navigation Menu */
+        .sidebar {
+            width: 280px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 24px 16px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .nav-section {
+            margin-bottom: 28px;
+        }
+        
+        .nav-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+            padding-left: 12px;
+            font-family: var(--font-mono);
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            border: 1px solid transparent;
+            transition: all 0.15s ease;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255,255,255,0.02);
+            color: var(--text);
+            border-color: var(--border);
+        }
+        
+        .nav-link.active {
+            background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(236,72,153,0.05));
+            color: var(--text);
+            border: 1px solid rgba(124,58,237,0.3);
+            box-shadow: inset 0 0 12px rgba(124,58,237,0.05);
+        }
+        
+        .nav-icon { 
+            font-size: 16px; 
+            width: 24px; 
+            text-align: center; 
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+            margin-top: auto;
+        }
+
+        .system-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface-raised);
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+
+        .system-badge-icon {
+            font-size: 14px;
+        }
+
+        .system-badge-text {
+            font-size: 11px;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        
+        /* Main Application Interface Workspace */
+        .main {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            background: var(--bg);
+        }
+        
+        .page-header {
+            margin-bottom: 32px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        
+        .page-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+        
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .current-time-block {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-dim);
+            text-align: right;
+            background: var(--surface-raised);
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+        
+        /* Structural Control Cards */
+        .card {
+            background: var(--surface-card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 28px;
+            margin-bottom: 28px;
+            position: relative;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 14px;
+        }
+        
+        .card-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text);
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-action-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+            font-family: var(--font-mono);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .card-action-btn:hover {
+            color: var(--text);
+            border-color: var(--text-dim);
+            background: var(--surface-raised);
+        }
+        
+        /* Metric Overview Counter Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        
+        .stat-card {
+            background: var(--surface-raised);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 24px;
+            position: relative;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--border-focus);
+        }
+        
+        .stat-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+            font-family: var(--font-mono);
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+        
+        .stat-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-indicator-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+        
+        /* Professional Database Tables Data Layout */
+        .table-wrap { 
+            overflow-x: auto; 
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 13px;
+            text-align: left;
+        }
+        
+        th {
+            padding: 14px 18px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            font-family: var(--font-mono);
+        }
+
+        th:first-child {
+            border-top-left-radius: var(--radius-sm);
+            border-bottom-left-radius: var(--radius-sm);
+        }
+
+        th:last-child {
+            border-top-right-radius: var(--radius-sm);
+            border-bottom-right-radius: var(--radius-sm);
+        }
+        
+        td {
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-muted);
+            vertical-align: middle;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(255,255,255,0.01);
+            color: var(--text);
+        }
+
+        /* Database Item Styling */
+        .db-primary-text {
+            color: var(--text);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .db-secondary-text {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-top: 2px;
+        }
+
+        .db-mono-code {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Status Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: var(--font-mono);
+            border: 1px solid transparent;
+        }
+        .badge-green { 
+            background: rgba(34,197,94,0.1); 
+            color: #4ade80; 
+            border-color: rgba(34,197,94,0.15);
+        }
+        .badge-blue { 
+            background: rgba(59,130,246,0.1); 
+            color: #60a5fa; 
+            border-color: rgba(59,130,246,0.15);
+        }
+        .badge-orange { 
+            background: rgba(249,115,22,0.1); 
+            color: #fb923c; 
+            border-color: rgba(249,115,22,0.15);
+        }
+        .badge-purple { 
+            background: rgba(124,58,237,0.1); 
+            color: #c084fc; 
+            border-color: rgba(124,58,237,0.15);
+        }
+        .badge-danger {
+            background: rgba(239,68,68,0.1);
+            color: #f87171;
+            border-color: rgba(239,68,68,0.15);
+        }
+
+        /* Forms Layout & Controls */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+        
+        @media (max-width: 992px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+        }
+        
+        .form-group { 
+            margin-bottom: 4px; 
+        }
+        
+        .form-group.full { 
+            grid-column: 1 / -1; 
+        }
+        
+        label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: var(--font-mono);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 14px;
+            font-family: var(--font-sans);
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            outline: none;
+            color: var(--text);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--purple);
+            box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
+        }
+
+        input[type="file"] {
+            padding: 10px 14px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        input[type="file"]::-webkit-file-upload-button {
+            background: var(--surface-raised);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            margin-right: 14px;
+            transition: background 0.2s;
+        }
+
+        input[type="file"]::-webkit-file-upload-button:hover {
+            background: var(--border);
+        }
+        
+        input::placeholder, textarea::placeholder { 
+            color: var(--text-dim); 
+        }
+        
+        textarea { 
+            resize: vertical; 
+            min-height: 120px; 
+        }
+
+        .input-info-text {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-top: 6px;
+            display: block;
+        }
+        
+        /* System Operational Interactive Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 28px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.2s, background 0.2s;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--purple), var(--purple-light));
+            color: white;
+            box-shadow: 0 4px 16px rgba(124,58,237,0.25);
+        }
+        
+        .btn-primary:hover {
+            box-shadow: 0 6px 24px rgba(124,58,237,0.4);
+            background: linear-gradient(135deg, #8b5cf6, #c084fc);
+        }
+        
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--text-dim);
+            color: var(--text);
+            background: var(--surface-raised);
+        }
+
+        .btn-danger-action {
+            background: rgba(239,68,68,0.1);
+            color: #f87171;
+            border: 1px solid rgba(239,68,68,0.2);
+        }
+
+        .btn-danger-action:hover {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+        
+        /* Empty Database View Placeholder State */
+        .empty-state {
+            text-align: center;
+            padding: 64px 32px;
+            color: var(--text-dim);
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            background: rgba(0,0,0,0.1);
+        }
+        
+        .empty-state-icon { 
+            font-size: 44px; 
+            margin-bottom: 16px; 
+            opacity: 0.6;
+        }
+
+        .empty-state-text {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .empty-state-sub {
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+        
+        /* Flash System Messaging Notification Overlay */
+        .flash-messages { 
+            margin-bottom: 28px; 
+        }
+        
+        .flash {
+            padding: 16px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            margin-bottom: 12px;
+            font-weight: 500;
+            font-family: var(--font-mono);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .flash.success { 
+            background: rgba(34,197,94,0.08); 
+            color: #4ade80; 
+            border: 1px solid rgba(34,197,94,0.2); 
+        }
+        .flash.warning { 
+            background: rgba(234,179,8,0.08); 
+            color: #facc15; 
+            border: 1px solid rgba(234,179,8,0.2); 
+        }
+        .flash.danger, .flash.error { 
+            background: rgba(239,68,68,0.08); 
+            color: #f87171; 
+            border: 1px solid rgba(239,68,68,0.2); 
+        }
+        .flash.info { 
+            background: rgba(59,130,246,0.08); 
+            color: #60a5fa; 
+            border: 1px solid rgba(59,130,246,0.2); 
+        }
+
+        .security-banner {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(124,58,237,0.05);
+            border: 1px solid rgba(124,58,237,0.15);
+            padding: 12px 18px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 24px;
+        }
+
+        .security-banner-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--purple-light);
+            border-radius: 50%;
+            animation: statusPulse 1.5s infinite;
+        }
+
+        .security-banner-text {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            color: var(--purple-light);
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="brand">
+            <div class="brand-icon">🛡️</div>
+            <div class="brand-text">DGD <span>Control Tower</span></div>
+        </div>
+        <div class="user-menu">
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span class="user-name">{{ admin_name if admin_name else 'System Administrator' }}</span>
+            </div>
+            <a href="/admin/logout" class="btn-logout">Terminate Session</a>
+        </div>
+    </div>
+
+    <div class="layout">
+        <nav class="sidebar">
+            <div class="sidebar-top">
+                <div class="nav-section">
+                    <div class="nav-label">Command Module</div>
+                    <a href="/admin/dashboard" class="nav-link {% if view_mode == 'dashboard' or not view_mode %}active{% endif %}">
+                        <span class="nav-icon">📊</span> Overview Terminal
+                    </a>
+                    <a href="/admin/staff/new" class="nav-link {% if view_mode == 'staff_create' %}active{% endif %}">
+                        <span class="nav-icon">➕</span> Provision New Staff
+                    </a>
+                    <a href="/admin/messages" class="nav-link {% if view_mode == 'message_inbox' %}active{% endif %}">
+                        <span class="nav-icon">✉️</span> Public Messages
+                    </a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-label">Secure Master Registers</div>
+                    <a href="/admin/clients" class="nav-link {% if view_mode == 'clients' %}active{% endif %}">
+                        <span class="nav-icon">👥</span> Client Database
+                    </a>
+                    <a href="/admin/payments" class="nav-link {% if view_mode == 'payments' %}active{% endif %}">
+                        <span class="nav-icon">💳</span> Financial Ledger
+                    </a>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="system-badge">
+                    <span class="system-badge-icon">🔒</span>
+                    <span class="system-badge-text">Root Connection Encrypted</span>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                    <div class="flash {{ category }}">
+                        <span>⚡</span>
+                        <div>{{ message }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            {% endwith %}
+                        {% if view_mode == 'dashboard' or not view_mode %}
+            <div class="page-header">
+                <div>
+                    <div class="page-title">System Overview Matrix</div>
+                    <div class="page-subtitle">Real-time operational records, database node volumes, and financial auditing baselines.</div>
+                </div>
+                <div class="current-time-block">
+                    <span>SYS CORE STATUS: ONLINE</span>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Staff Nodes</div>
+                    <div class="stat-value">{{ metrics.total_staff if metrics else '0' }}</div>
+                    <div class="stat-meta">
+                        <span class="stat-indicator-dot" style="background: var(--green);"></span>
+                        <span>{{ metrics.active_staff if metrics else '0' }} Profiles Active on Ledger</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Registered Clients</div>
+                    <div class="stat-value">{{ metrics.total_clients if metrics else '0' }}</div>
+                    <div class="stat-meta">
+                        <span class="stat-indicator-dot" style="background: var(--blue);"></span>
+                        <span>Frontend Pipeline Registry</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Transmission Signals</div>
+                    <div class="stat-value">{{ metrics.total_messages if metrics else '0' }}</div>
+                    <div class="stat-meta">
+                        <span class="stat-indicator-dot" style="background: var(--purple-light);"></span>
+                        <span>Inbound Form Data Feed</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Gross Processed Turnover</div>
+                    <div class="stat-value" style="color: var(--green);">{{ metrics.total_revenue if metrics else '$0.00' }}</div>
+                    <div class="stat-meta">
+                        <span class="stat-indicator-dot" style="background: var(--green);"></span>
+                        <span>Audited Ledger Pipeline</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">👥 Authorized System Staff Records</div>
+                    <a href="/admin/staff/new" class="card-action-btn">+ Provision Profile</a>
+                </div>
+                <div class="table-wrap">
+                    {% if staff_list %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Employee ID</th>
+                                <th>Full Legal Name</th>
+                                <th>Login Username</th>
+                                <th>Assigned Assignment Role</th>
+                                <th>Department Node</th>
+                                <th>Verification Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for staff in staff_list %}
+                            <tr>
+                                <td class="db-mono-code" style="color: var(--purple-light);">{{ staff.employee_id }}</td>
+                                <td>
+                                    <div class="db-primary-text">{{ staff.full_name }}</div>
+                                    <div class="db-secondary-text">Joined: {{ staff.created_at or 'Legacy Node' }}</div>
+                                </td>
+                                <td class="db-mono-code">{{ staff.username }}</td>
+                                <td>{{ staff.role }}</td>
+                                <td>{{ staff.department }}</td>
+                                <td>
+                                    <span class="badge {% if staff.current_status == 'active' or staff.is_active %}badge-green{% else %}badge-orange{% endif %}">
+                                        {{ staff.current_status or ('Active' if staff.is_active else 'Pending') }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">👥</div>
+                        <div class="empty-state-text">No operational staff allocated to this database matrix yet.</div>
+                        <div class="empty-state-sub">Click the "+ Provision Profile" button above to manually authorize your first staff file.</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if view_mode == 'staff_create' %}
+            <div class="page-header">
+                <div>
+                    <div class="page-title">Provision New Corporate Staff Profile</div>
+                    <div class="page-subtitle">Generate credentials to allow authorized team members to log into their system.</div>
+                </div>
+                <a href="/admin/dashboard" class="btn btn-secondary" style="padding: 8px 16px; font-size: 11px;">← Cancel View</a>
+            </div>
+
+            <div class="card">
+                <div class="security-banner">
+                    <div class="security-banner-dot"></div>
+                    <span class="security-banner-text">Database Write Mode Active — Admin Authorization Shield Enabled</span>
+                </div>
+                
+                <form method="POST" action="/admin/staff/new">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="employee_id">System Employee ID</label>
+                            <input type="text" id="employee_id" name="employee_id" required placeholder="e.g. DGD-AU-042">
+                            <span class="input-info-text">Unique identification string logged in corporate directory.</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="full_name">Legal Corporate Name</label>
+                            <input type="text" id="full_name" name="full_name" required placeholder="e.g. Alexander Vance">
+                            <span class="input-info-text">Full name required for contract matching and payroll audits.</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="username">Staff Login Username</label>
+                            <input type="text" id="username" name="username" required placeholder="e.g. alexvance">
+                            <span class="input-info-text">Staff will enter this parameter on the standard staff login gateway.</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password">Create Profile Login Password</label>
+                            <input type="password" id="password" name="password" required placeholder="••••••••">
+                            <span class="input-info-text">Temporary authentication password. Provide this manually to the staff member.</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="role">Corporate Operations Assignment</label>
+                            <input type="text" id="role" name="role" required placeholder="e.g. Consultant">
+                            <span class="input-info-text">Assigned rank structure (e.g. Senior Officer, Intern).</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="department">Corporate Department Unit</label>
+                            <input type="text" id="department" name="department" required placeholder="e.g. Visa Assessment Core">
+                            <span class="input-info-text">Operational assignment matrix cluster location.</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="current_status">Initial System Authority Privilege</label>
+                            <select id="current_status" name="current_status">
+                                <option value="active" selected>Active — Grant Access Parameters Instantly</option>
+                                <option value="pending">Pending — Hold Credentials Under Review</option>
+                                <option value="suspended">Suspended — Quarantine Account parameters</option>
+                            </select>
+                            <span class="input-info-text">Initial system clearance level applied upon database storage.</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="salary_rate">Assigned Financial Base Contract Rate</label>
+                            <input type="text" id="salary_rate" name="salary_rate" placeholder="e.g. $4,500 / Month">
+                            <span class="input-info-text">Internal reference metrics for building payroll sheets.</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 32px; border-top: 1px solid var(--border); padding-top: 24px; display: flex; gap: 14px;">
+                        <button type="submit" class="btn btn-primary">Commit Profile to Ledger</button>
+                        <button type="reset" class="btn btn-secondary">Clear Fields</button>
+                    </div>
+                </form>
+            </div>
+            {% endif %}
+            {% if view_mode == 'message_inbox' %}
+            <div class="page-header">
+                <div>
+                    <div class="page-title">Inbound Signal Feed</div>
+                    <div class="page-subtitle">Raw public inquiries and anonymous contact form transmissions.</div>
+                </div>
+                <div class="current-time-block">
+                    <span>FEED INTERVAL: REALTIME</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="table-wrap">
+                    {% if messages_list %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Received Timestamp</th>
+                                <th>Sender Legal Identity</th>
+                                <th>Electronic Mail Route</th>
+                                <th>Data Transmission Payload</th>
+                                <th>Administrative Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for msg in messages_list %}
+                            <tr>
+                                <td class="db-mono-code" style="font-size: 11px; color: var(--pink);">{{ msg.created_at }}</td>
+                                <td>
+                                    <div class="db-primary-text">{{ msg.name }}</div>
+                                    <div class="db-secondary-text">IP Status: Logged</div>
+                                </td>
+                                <td class="db-mono-code">{{ msg.email }}</td>
+                                <td style="max-width: 320px; line-height: 1.5; color: var(--text);">{{ msg.body }}</td>
+                                <td>
+                                    <div style="display: flex; gap: 8px;">
+                                        <a href="mailto:{{ msg.email }}" class="card-action-btn" style="border-color: var(--blue); color: var(--blue);">Reply</a>
+                                        <form method="POST" action="/admin/messages/{{ msg.id }}/delete" style="display: inline;" onsubmit="return confirm('Purge message payload permanently?');">
+                                            <button type="submit" class="card-action-btn" style="border-color: var(--danger); color: #f87171; background: transparent;">Purge</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">✉️</div>
+                        <div class="empty-state-text">No message metrics tracked on current communications vector.</div>
+                        <div class="empty-state-sub">External frontend traffic will sync automatically when users dispatch inquiries.</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if view_mode == 'clients' %}
+            <div class="page-header">
+                <div>
+                    <div class="page-title">Client Master Registry Vault</div>
+                    <div class="page-subtitle">Central accounting and operational tracking pipeline for system customer user profiles.</div>
+                </div>
+                <div class="current-time-block">
+                    <span>REGISTRY INDEXES SECURED</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="table-wrap">
+                    {% if clients_list %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Client Hash Ref</th>
+                                <th>Company / Client Name</th>
+                                <th>Communication Routing</th>
+                                <th>Service Designation Class</th>
+                                <th>Pipeline Step Status</th>
+                                <th>System Administration</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for client in clients_list %}
+                            <tr>
+                                <td class="db-mono-code" style="color: var(--blue);">{{ client.client_ref if client.client_ref else 'REF-UNASSIGNED' }}</td>
+                                <td>
+                                    <div class="db-primary-text">{{ client.full_name }}</div>
+                                    <div class="db-secondary-text">Account Node ID: #{{ client.id }}</div>
+                                </td>
+                                <td>
+                                    <div class="db-primary-text" style="font-size: 13px;">{{ client.email }}</div>
+                                    <div class="db-secondary-text">{{ client.phone if client.phone else 'No voice route' }}</div>
+                                </td>
+                                <td>
+                                    <span class="badge badge-purple">{{ client.service_type if client.service_type else 'General Query' }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge {% if client.service_status == 'Approved' or client.service_status == 'active' %}badge-green{% else %}badge-blue{% endif %}">
+                                        {{ client.service_status if client.service_status else 'Processing' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="/admin/clients/{{ client.id }}/inspect" class="card-action-btn">Inspect File</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <div class="empty-state-text">No active client files found inside database record sets.</div>
+                        <div class="empty-state-sub">Profiles will populate automatically upon standard customer onboarding registration.</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if view_mode == 'payments' %}
+            <div class="page-header">
+                <div>
+                    <div class="page-title">Financial Transaction Audit Ledger & Payroll Core</div>
+                    <div class="page-subtitle">Monitor incoming clearing accounts, view metrics, and provision employee payslip documentation.</div>
+                </div>
+                <div class="current-time-block">
+                    <span>AUDITING LAYER DEPLOYED</span>
+                </div>
+            </div>
+
+            <div class="card" style="border-color: var(--purple);">
+                <div class="card-header">
+                    <div class="card-title" style="color: var(--purple-light);">📥 Upload & Process Authorized Employee Payslip</div>
+                </div>
+                <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px; line-height: 1.5;">
+                    Select an authorized operational staff profile from the central register to link a digital statement audit document. The matching staff node will be able to instantly view and download this slip inside their personal dashboard ledger view.
+                </p>
+                
+                <form method="POST" action="/admin/payslip/upload" enctype="multipart/form-data">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="staff_id">Target Staff Recipient Allocation</label>
+                            <select id="staff_id" name="staff_id" required>
+                                <option value="" disabled selected>-- Select Profile Node to Fund --</option>
+                                {% if staff_list %}
+                                    {% for staff in staff_list %}
+                                        <option value="{{ staff.id }}">{{ staff.full_name }} (ID: {{ staff.employee_id }})</option>
+                                    {% endfor %}
+                                {% else %}
+                                    <option value="" disabled>No authorized staff profiles detected inside ledger.</option>
+                                {% endif %}
+                            </select>
+                            <span class="input-info-text">The binary profile attachment will tie exactly to this system employee account.</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="pay_period">Statement Cycle Allocation Period</label>
+                            <input type="text" id="pay_period" name="pay_period" required placeholder="e.g. June 2026 — Cycle 01">
+                            <span class="input-info-text">Temporal definition mapping for salary transparency.</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="amount_paid">Calculated Net Payout Value</label>
+                            <input type="text" id="amount_paid" name="amount_paid" required placeholder="e.g. $4,250.00">
+                            <span class="input-info-text">The numeric currency total transferred onto the ledger ledger.</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="payment_status">Remittance Status Flag</label>
+                            <select id="payment_status" name="payment_status">
+                                <option value="Cleared" selected>Cleared / Settled / Paid</option>
+                                <option value="Processing">Processing / Escrow Hold</option>
+                            </select>
+                            <span class="input-info-text">Initial validation visibility token.</span>
+                        </div>
+                        
+                        <div class="form-group full">
+                            <label for="payslip_file">Select Financial Document Attachment String (PDF / Image Binary)</label>
+                            <input type="file" id="payslip_file" name="payslip_file" required accept=".pdf,image/*">
+                            <span class="input-info-text">Strict document limit check. Maximum allowed size benchmark is 16MB.</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 32px; border-top: 1px solid var(--border); padding-top: 24px;">
+                        <button type="submit" class="btn btn-primary">Process Ledger Entry & Dispatch Payslip</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">💳 Audited Gross Payments Log</div>
+                </div>
+                <div class="table-wrap">
+                    {% if payments_list %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Transaction Hash</th>
+                                <th>Target Client Profile Name</th>
+                                <th>Monetary Gross Amount</th>
+                                <th>System Invoice Reference</th>
+                                <th>Settlement Timestamp</th>
+                                <th>Auditing Clearing Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pay in payments_list %}
+                            <tr>
+                                <td class="db-mono-code" style="color: var(--pink); font-size: 11px;">{{ pay.txn_id }}</td>
+                                <td><strong>{{ pay.client_name }}</strong></td>
+                                <td style="color: var(--green); font-family: var(--font-mono); font-weight: 700;">{{ pay.amount }}</td>
+                                <td class="db-mono-code">{{ pay.invoice_ref }}</td>
+                                <td>{{ pay.date_processed }}</td>
+                                <td>
+                                    <span class="badge badge-green">Cleared & Settled</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💳</div>
+                        <div class="empty-state-text">No incoming monetary transaction records captured yet.</div>
+                        <div class="empty-state-sub">Audited processing items will reflect here when clients authorize invoicing calls.</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+</body>
+</html>

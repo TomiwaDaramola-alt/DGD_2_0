@@ -1,0 +1,796 @@
+<!DOCTYPE html><html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Started — DGD CONSULT AU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <style>
+        :root {
+            --navy-950: #0a1628;
+            --navy-900: #0f1d35;
+            --navy-800: #1a2744;
+            --blue-600: #2563eb;
+            --blue-500: #3b82f6;
+            --blue-50: #eff6ff;
+            --slate-100: #f1f5f9;
+            --slate-200: #e2e8f0;
+            --slate-400: #94a3b8;
+            --slate-500: #64748b;
+            --slate-700: #334155;
+            --white: #ffffff;
+            --radius-xl: 16px;
+            --radius-lg: 12px;
+            --radius-md: 8px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--navy-950);
+            min-height: 100vh;
+            padding: 24px 16px;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .header {
+            text-align: center;
+            padding: 32px 0 24px;
+        }
+        .header-label {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--blue-600);
+            margin-bottom: 12px;
+        }
+        .header h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--navy-950);
+            margin-bottom: 8px;
+        }
+        .header p {
+            color: var(--slate-500);
+            font-size: 16px;
+            max-width: 480px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        .register-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-top: 32px;
+        }
+        @media (max-width: 900px) {
+            .register-grid { grid-template-columns: 1fr; }
+        }
+        .panel {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--slate-200);
+            padding: 32px;
+            box-shadow: 0 10px 40px rgba(10, 22, 40, 0.06);
+        }
+        .panel-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--navy-950);
+            margin-bottom: 24px;
+        }
+        .service-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .service-option {
+            display: block;
+            cursor: pointer;
+            position: relative;
+        }
+        .service-option input {
+            position: absolute;
+            opacity: 0;
+        }
+        .service-option-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            border: 2px solid var(--slate-200);
+            border-radius: var(--radius-lg);
+            transition: all 0.2s;
+            background: var(--white);
+        }
+        .service-option:hover .service-option-content {
+            border-color: var(--blue-500);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+        }
+        .service-option input:checked + .service-option-content {
+            border-color: var(--blue-600);
+            background: linear-gradient(135deg, var(--blue-50), var(--white));
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        .service-icon {
+            font-size: 24px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--slate-100);
+            border-radius: var(--radius-md);
+            flex-shrink: 0;
+        }
+        .service-option input:checked + .service-option-content .service-icon {
+            background: linear-gradient(135deg, var(--blue-500), var(--blue-600));
+        }
+        .service-info { flex: 1; }
+        .service-name { font-weight: 700; color: var(--navy-950); margin-bottom: 2px; font-size: 14px; }
+        .service-desc { font-size: 13px; color: var(--slate-500); margin-bottom: 4px; }
+        .service-price { font-size: 13px; font-weight: 700; color: var(--blue-600); }
+        .addons-section {
+            padding: 20px;
+            background: var(--slate-100);
+            border-radius: var(--radius-lg);
+            display: none;
+        }
+        .addons-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--navy-950);
+            margin-bottom: 16px;
+        }
+        .addon-option {
+            display: block;
+            cursor: pointer;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .addon-option input { position: absolute; opacity: 0; }
+        .addon-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius-md);
+            background: var(--white);
+            transition: all 0.2s;
+        }
+        .addon-option:hover .addon-content { border-color: var(--blue-500); }
+        .addon-option input:checked + .addon-content {
+            border-color: var(--blue-600);
+            background: var(--blue-50);
+        }
+        .addon-name { font-weight: 600; font-size: 13px; color: var(--navy-950); }
+        .addon-desc { font-size: 12px; color: var(--slate-500); }
+        .addon-price { margin-left: auto; font-size: 13px; font-weight: 700; color: var(--blue-600); }
+        .family-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--slate-200);
+        }
+        .family-label { font-size: 13px; font-weight: 600; color: var(--navy-950); margin-bottom: 8px; display: block; }
+        .family-counter { display: flex; align-items: center; gap: 12px; }
+        .counter-btn {
+            width: 36px; height: 36px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--slate-200);
+            background: var(--white);
+            font-size: 18px; font-weight: 700;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .counter-btn:hover { background: var(--slate-200); }
+        .family-counter input {
+            width: 60px; text-align: center;
+            font-weight: 700; font-size: 16px;
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius-md);
+            padding: 6px;
+        }
+        .family-price { font-size: 13px; color: var(--slate-500); }
+        .form-group { margin-bottom: 18px; }
+        .form-row { display: flex; gap: 16px; }
+        .form-row .form-group { flex: 1; }
+        @media (max-width: 600px) { .form-row { flex-direction: column; gap: 0; } }
+        label {
+            display: block;
+            font-weight: 600;
+            color: var(--navy-950);
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+        input[type="text"], input[type="email"], input[type="tel"], input[type="password"], input[type="date"], select, textarea {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            color: var(--navy-950);
+            background: var(--white);
+            border: 1px solid var(--slate-200);
+            border-radius: var(--radius-md);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--blue-500);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 40px;
+        }
+        textarea { resize: vertical; min-height: 100px; }
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 14px;
+            cursor: pointer;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: 18px; height: 18px;
+            min-width: 18px;
+            margin-top: 2px;
+            accent-color: var(--blue-600);
+            cursor: pointer;
+        }
+        .checkbox-group label {
+            font-weight: 400;
+            color: var(--slate-500);
+            line-height: 1.5;
+            font-size: 13px;
+            cursor: pointer;
+            margin: 0;
+        }
+        .checkbox-group a { color: var(--blue-600); text-decoration: none; }
+        .checkbox-group a:hover { text-decoration: underline; }
+        .credentials-section {
+            background: linear-gradient(135deg, var(--navy-950), var(--navy-800));
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin: 24px 0;
+        }
+        .credentials-section .panel-title {
+            color: var(--white);
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+        .credentials-section label { color: #cbd5e1; }
+        .credentials-section input {
+            background: var(--navy-900);
+            border-color: var(--navy-800);
+            color: var(--white);
+        }
+        .credentials-section input:focus {
+            border-color: var(--blue-500);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        .credentials-section input::placeholder { color: var(--slate-500); }
+        .btn-submit {
+            width: 100%;
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--blue-600), var(--navy-950));
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-submit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--slate-500);
+        }
+        .login-link a {
+            color: var(--blue-600);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .login-link a:hover { text-decoration: underline; }
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+        .flash {
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .flash.success { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+        .flash.warning { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+        .flash.info { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-label">Begin Your Journey</span>
+            <h1>Get Started with DGD</h1>
+            <p>Choose your path: book a free consultation or engage our premium services immediately.</p>
+        </div>
+
+        <div class="register-grid">
+            <!-- Service Selection Panel -->
+            <div class="panel">
+                <h2 class="panel-title">Select Your Service</h2>
+                
+                <div class="service-options">
+                    <label class="service-option" data-service="consultation" data-amount="0">
+                        <input type="radio" name="service_type" value="consultation" checked>
+                        <div class="service-option-content">
+                            <div class="service-icon">💬</div>
+                            <div class="service-info">
+                                <div class="service-name">Free Consultation</div>
+                                <div class="service-desc">30-minute discovery call. No obligation.</div>
+                                <div class="service-price">Complimentary</div>
+                            </div>
+                        </div>
+                    </label>
+                    
+                    <label class="service-option" data-service="visa_600" data-amount="120000">
+                        <input type="radio" name="service_type" value="visa_600">
+                        <div class="service-option-content">
+                            <div class="service-icon">🏖️</div>
+                            <div class="service-info">
+                                <div class="service-name">Visitor Visa 600</div>
+                                <div class="service-desc">Full application assistance & lodgement</div>
+                                <div class="service-price">$1,200 AUD</div>
+                            </div>
+                        </div>
+                    </label>
+                    
+                    <label class="service-option" data-service="visa_500" data-amount="200000">
+                        <input type="radio" name="service_type" value="visa_500">
+                        <div class="service-option-content">
+                            <div class="service-icon">🎓</div>
+                            <div class="service-info">
+                                <div class="service-name">Student Visa 500</div>
+                                <div class="service-desc">Course matching, COE, GTE, lodgement</div>
+                                <div class="service-price">$2,000 AUD</div>
+                            </div>
+                        </div>
+                    </label>
+                    
+                    <label class="service-option" data-service="visa_482" data-amount="450000">
+                        <input type="radio" name="service_type" value="visa_482">
+                        <div class="service-option-content">
+                            <div class="service-icon">💼</div>
+                            <div class="service-info">
+                                <div class="service-name">TSS Visa 482</div>
+                                <div class="service-desc">Employer sponsorship pathway</div>
+                                <div class="service-price">$4,500 AUD</div>
+                            </div>
+                        </div>
+                    </label>
+                    
+                    <label class="service-option" data-service="visa_186" data-amount="700000">
+                        <input type="radio" name="service_type" value="visa_186">
+                        <div class="service-option-content">
+                            <div class="service-icon">🏠</div>
+                            <div class="service-info">
+                                <div class="service-name">ENS Visa 186</div>
+                                <div class="service-desc">Permanent residency via employer</div>
+                                <div class="service-price">$7,000 AUD</div>
+                            </div>
+                        </div>
+                    </label>
+                    
+                    <label class="service-option" data-service="training_rsa" data-amount="12000">
+                        <input type="radio" name="service_type" value="training_rsa">
+                        <div class="service-option-content">
+                            <div class="service-icon">🍷</div>
+                            <div class="service-info">
+                                <div class="service-name">RSA / RCG Training</div>
+                                <div class="service-desc">Nationally recognized certification</div>
+                                <div class="service-price">$120 AUD</div>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+                
+                <div class="addons-section" id="serviceAddons">
+                    <div class="addons-title">Optional Add-ons</div>
+                    
+                    <label class="addon-option">
+                        <input type="checkbox" name="addon_expedited" data-price="50000">
+                        <div class="addon-content">
+                            <div>
+                                <div class="addon-name">Expedited Processing</div>
+                                <div class="addon-desc">Priority queue — 48-hour turnaround</div>
+                            </div>
+                            <div class="addon-price">+$500</div>
+                        </div>
+                    </label>
+                    
+                    <label class="addon-option">
+                        <input type="checkbox" name="addon_premium" data-price="100000">
+                        <div class="addon-content">
+                            <div>
+                                <div class="addon-name">Premium Support</div>
+                                <div class="addon-desc">Dedicated agent + after-hours contact</div>
+                            </div>
+                            <div class="addon-price">+$1,000</div>
+                        </div>
+                    </label>
+                    
+                    <div class="family-section">
+                        <label class="family-label">Additional Family Members</label>
+                        <div class="family-counter">
+                            <button type="button" class="counter-btn" id="familyMinus">−</button>
+                            <input type="number" name="addon_family" id="familyCount" value="0" min="0" max="10" readonly>
+                            <button type="button" class="counter-btn" id="familyPlus">+</button>
+                            <span class="family-price">$300 each</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Registration Form Panel -->
+            <div class="panel">
+                <form id="registerForm" method="POST" action="/client/register">
+                    <h2 class="panel-title">Your Details</h2>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="given_names">Given Names *</label>
+                            <input type="text" id="given_names" name="given_names" required placeholder="e.g. John Michael">
+                        </div>
+                        <div class="form-group">
+                            <label for="family_name">Family Name *</label>
+                            <input type="text" id="family_name" name="family_name" required placeholder="e.g. Smith">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" required placeholder="john.smith@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number *</label>
+                        <input type="tel" id="phone" name="phone" required placeholder="+61 400 000 000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="date_of_birth">Date of Birth</label>
+                        <input type="date" id="date_of_birth" name="date_of_birth">
+                    </div>
+                    
+<div class="form-group">
+    <label for="country">Country of Residence *</label>
+    <select id="country" name="country" required>
+        <option value="">Select your country...</option>
+
+        <option value="AF">Afghanistan</option>
+        <option value="AL">Albania</option>
+        <option value="DZ">Algeria</option>
+        <option value="AR">Argentina</option>
+        <option value="AM">Armenia</option>
+        <option value="AU">Australia</option>
+        <option value="AT">Austria</option>
+        <option value="AZ">Azerbaijan</option>
+        <option value="BD">Bangladesh</option>
+        <option value="BY">Belarus</option>
+        <option value="BE">Belgium</option>
+        <option value="BJ">Benin</option>
+        <option value="BO">Bolivia</option>
+        <option value="BA">Bosnia and Herzegovina</option>
+        <option value="BW">Botswana</option>
+        <option value="BR">Brazil</option>
+        <option value="BG">Bulgaria</option>
+        <option value="BF">Burkina Faso</option>
+        <option value="BI">Burundi</option>
+        <option value="KH">Cambodia</option>
+        <option value="CM">Cameroon</option>
+        <option value="CA">Canada</option>
+        <option value="TD">Chad</option>
+        <option value="CL">Chile</option>
+        <option value="CN">China</option>
+        <option value="CO">Colombia</option>
+        <option value="CG">Congo</option>
+        <option value="CR">Costa Rica</option>
+        <option value="HR">Croatia</option>
+        <option value="CU">Cuba</option>
+        <option value="CY">Cyprus</option>
+        <option value="CZ">Czech Republic</option>
+        <option value="DK">Denmark</option>
+        <option value="DJ">Djibouti</option>
+        <option value="DO">Dominican Republic</option>
+        <option value="EC">Ecuador</option>
+        <option value="EG">Egypt</option>
+        <option value="SV">El Salvador</option>
+        <option value="EE">Estonia</option>
+        <option value="ET">Ethiopia</option>
+        <option value="FI">Finland</option>
+        <option value="FR">France</option>
+        <option value="GA">Gabon</option>
+        <option value="GM">Gambia</option>
+        <option value="GE">Georgia</option>
+        <option value="DE">Germany</option>
+        <option value="GH">Ghana</option>
+        <option value="GR">Greece</option>
+        <option value="GT">Guatemala</option>
+        <option value="GN">Guinea</option>
+        <option value="HT">Haiti</option>
+        <option value="HN">Honduras</option>
+        <option value="HK">Hong Kong</option>
+        <option value="HU">Hungary</option>
+        <option value="IS">Iceland</option>
+        <option value="IN">India</option>
+        <option value="ID">Indonesia</option>
+        <option value="IR">Iran</option>
+        <option value="IQ">Iraq</option>
+        <option value="IE">Ireland</option>
+        <option value="IL">Israel</option>
+        <option value="IT">Italy</option>
+        <option value="JM">Jamaica</option>
+        <option value="JP">Japan</option>
+        <option value="JO">Jordan</option>
+        <option value="KZ">Kazakhstan</option>
+        <option value="KE">Kenya</option>
+        <option value="KW">Kuwait</option>
+        <option value="KG">Kyrgyzstan</option>
+        <option value="LA">Laos</option>
+        <option value="LV">Latvia</option>
+        <option value="LB">Lebanon</option>
+        <option value="LR">Liberia</option>
+        <option value="LY">Libya</option>
+        <option value="LT">Lithuania</option>
+        <option value="LU">Luxembourg</option>
+        <option value="MG">Madagascar</option>
+        <option value="MW">Malawi</option>
+        <option value="MY">Malaysia</option>
+        <option value="ML">Mali</option>
+        <option value="MT">Malta</option>
+        <option value="MX">Mexico</option>
+        <option value="MD">Moldova</option>
+        <option value="MN">Mongolia</option>
+        <option value="ME">Montenegro</option>
+        <option value="MA">Morocco</option>
+        <option value="MZ">Mozambique</option>
+        <option value="MM">Myanmar</option>
+        <option value="NA">Namibia</option>
+        <option value="NP">Nepal</option>
+        <option value="NL">Netherlands</option>
+        <option value="NZ">New Zealand</option>
+        <option value="NI">Nicaragua</option>
+        <option value="NE">Niger</option>
+        <option value="NG">Nigeria</option>
+        <option value="KP">North Korea</option>
+        <option value="NO">Norway</option>
+        <option value="OM">Oman</option>
+        <option value="PK">Pakistan</option>
+        <option value="PA">Panama</option>
+        <option value="PY">Paraguay</option>
+        <option value="PE">Peru</option>
+        <option value="PH">Philippines</option>
+        <option value="PL">Poland</option>
+        <option value="PT">Portugal</option>
+        <option value="QA">Qatar</option>
+        <option value="RO">Romania</option>
+        <option value="RU">Russia</option>
+        <option value="RW">Rwanda</option>
+        <option value="SA">Saudi Arabia</option>
+        <option value="SN">Senegal</option>
+        <option value="RS">Serbia</option>
+        <option value="SL">Sierra Leone</option>
+        <option value="SG">Singapore</option>
+        <option value="SK">Slovakia</option>
+        <option value="SI">Slovenia</option>
+        <option value="SO">Somalia</option>
+        <option value="ZA">South Africa</option>
+        <option value="KR">South Korea</option>
+        <option value="ES">Spain</option>
+        <option value="LK">Sri Lanka</option>
+        <option value="SD">Sudan</option>
+        <option value="SE">Sweden</option>
+        <option value="CH">Switzerland</option>
+        <option value="SY">Syria</option>
+        <option value="TW">Taiwan</option>
+        <option value="TJ">Tajikistan</option>
+        <option value="TZ">Tanzania</option>
+        <option value="TH">Thailand</option>
+        <option value="TG">Togo</option>
+        <option value="TN">Tunisia</option>
+        <option value="TR">Turkey</option>
+        <option value="TM">Turkmenistan</option>
+        <option value="UG">Uganda</option>
+        <option value="UA">Ukraine</option>
+        <option value="AE">United Arab Emirates</option>
+        <option value="GB">United Kingdom</option>
+        <option value="US">United States</option>
+        <option value="UY">Uruguay</option>
+        <option value="UZ">Uzbekistan</option>
+        <option value="VE">Venezuela</option>
+        <option value="VN">Vietnam</option>
+        <option value="YE">Yemen</option>
+        <option value="ZM">Zambia</option>
+        <option value="ZW">Zimbabwe</option>
+
+        <option value="OTHER">Other</option>
+    </select>
+</div>
+                    
+                    <div class="form-group">
+                        <label for="message">How can we help? *</label>
+                        <textarea id="message" name="message" rows="4" placeholder="Tell us about your goals, timeline, and any specific visa or training needs..." required></textarea>
+                    </div>
+
+                    <!-- 🔐 NEW: Portal Credentials Section -->
+                    <div class="credentials-section">
+                        <h3 class="panel-title">🔐 Create Portal Login</h3>
+                        <p style="color: #94a3b8; font-size: 13px; margin-bottom: 16px; line-height: 1.5;">
+                            Set up your credentials to access your secure client portal, track applications, and communicate with your case manager.
+                        </p>
+                        <div class="form-group">
+                            <label for="portal_username">Portal Username *</label>
+                            <input type="text" id="portal_username" name="portal_username" required placeholder="Choose a username (e.g. johnsmith2026)">
+                        </div>
+                        <div class="form-group">
+                            <label for="portal_password">Portal Password *</label>
+                            <input type="password" id="portal_password" name="portal_password" required placeholder="Create a strong password" minlength="6">
+                        </div>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="marketing_consent" name="marketing_consent">
+                        <label for="marketing_consent">I agree to receive updates about DGD services and Australian migration news.</label>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="privacy_agreement" name="privacy_agreement" required>
+                        <label for="privacy_agreement">I agree to the <a href="#">Privacy Policy</a> and consent to my data being processed. *</label>
+                    </div>
+                    
+                    <button type="button" class="btn-submit" id="submitBtn" onclick="payWithPaystack()">
+                        <span id="submitText">Book Free Consultation</span>
+                    </button>
+                </form>
+                
+                <div class="login-link">
+                    Already have an account? <a href="/client/login">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        'use strict';
+        
+        const serviceOptions = document.querySelectorAll('.service-option');
+        const serviceAddons = document.getElementById('serviceAddons');
+        const submitText = document.getElementById('submitText');
+        const familyMinus = document.getElementById('familyMinus');
+        const familyPlus = document.getElementById('familyPlus');
+        const familyCount = document.getElementById('familyCount');
+        
+        let currentService = 'consultation';
+        let currentAmount = 0;
+        
+        serviceOptions.forEach(option => {
+            option.addEventListener('change', function() {
+                currentService = this.dataset.service;
+                currentAmount = parseInt(this.dataset.amount) || 0;
+                updateUI();
+            });
+        });
+        
+        document.querySelectorAll('.addon-option input').forEach(cb => {
+            cb.addEventListener('change', updateTotal);
+        });
+        
+        familyMinus.addEventListener('click', () => {
+            const val = parseInt(familyCount.value) || 0;
+            if (val > 0) { familyCount.value = val - 1; updateTotal(); }
+        });
+        
+        familyPlus.addEventListener('click', () => {
+            const val = parseInt(familyCount.value) || 0;
+            if (val < 10) { familyCount.value = val + 1; updateTotal(); }
+        });
+        
+        function calculateTotal() {
+            let total = currentAmount;
+            document.querySelectorAll('.addon-option input:checked').forEach(cb => {
+                total += parseInt(cb.dataset.price) || 0;
+            });
+            const family = parseInt(familyCount.value) || 0;
+            total += family * 30000;
+            return total;
+        }
+        
+        function updateUI() {
+            const total = calculateTotal();
+            if (currentService === 'consultation') {
+                serviceAddons.style.display = 'none';
+                submitText.textContent = 'Book Free Consultation';
+            } else {
+                serviceAddons.style.display = 'block';
+                submitText.textContent = 'Pay with Paystack — ' + formatCurrency(total);
+            }
+        }
+        
+        function updateTotal() {
+            const total = calculateTotal();
+            if (currentService !== 'consultation') {
+                submitText.textContent = 'Pay with Paystack — ' + formatCurrency(total);
+            }
+        }
+        
+        function formatCurrency(cents) {
+            return new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' }).format(cents / 100);
+        }
+        
+        window.payWithPaystack = function() {
+            const form = document.getElementById('registerForm');
+            
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            
+            const totalAmountCents = calculateTotal();
+            
+            if (currentService === 'consultation' || totalAmountCents === 0) {
+                form.submit();
+                return;
+            }
+            
+            const clientEmail = document.getElementById('email').value;
+            const givenNames = document.getElementById('given_names').value;
+            const familyName = document.getElementById('family_name').value;
+            
+            const handler = PaystackPop.setup({
+                key: 'pk_test_a49bd26daf79787b5fde3f01f093a548c00e7665',
+                email: clientEmail,
+                amount: totalAmountCents,
+                currency: 'NGN',
+                metadata: {
+                    custom_fields: [
+                        { display_name: "Client Name", variable_name: "client_name", value: givenNames + ' ' + familyName },
+                        { display_name: "Service Selected", variable_name: "service_type", value: currentService }
+                    ]
+                },
+                callback: function(response) {
+                    const refInput = document.createElement('input');
+                    refInput.type = 'hidden';
+                    refInput.name = 'paystack_reference';
+                    refInput.value = response.reference;
+                    form.appendChild(refInput);
+                    form.submit();
+                },
+                onClose: function() {
+                    alert('Checkout dismissed. Your application intake has been preserved.');
+                }
+            });
+            
+            handler.openIframe();
+        };
+        
+        updateUI();
+    })();
+    </script>
+</body>
+</html>

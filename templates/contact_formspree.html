@@ -1,0 +1,154 @@
+<!--
+=============================================================================
+DGD 2.0 — DGD CONSULT AU
+Contact Formspree Template: Independent Formspree Infrastructure Gateway
+Location: templates/contact_formspree.html
+
+Purpose: Structural contact form that wires communication payloads
+safely to Formspree endpoints. Matches the modern dashboard interface.
+No backend processing — form submits directly to Formspree API.
+=============================================================================
+-->
+{% extends "layout_base.html" %}
+
+{% block title %}Contact — {{ app_name }}{% endblock %}
+{% block page_title %}Contact Gateway{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Formspree-specific structural adjustments */
+    .formspree-disclaimer {
+        font-size: var(--text-xs);
+        padding: var(--space-md);
+        border: var(--border-thin);
+        border-radius: var(--radius-md);
+        margin-bottom: var(--space-lg);
+    }
+    .formspree-disclaimer strong {
+        font-weight: var(--weight-bold);
+    }
+    .honeypot-field {
+        display: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="grid grid-2">
+    <!-- Contact Form Panel -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">Send Message</div>
+        </div>
+        
+        <!--
+        FORMSPREE INTEGRATION
+        Replace YOUR_FORM_ID with actual Formspree form endpoint
+        Example: https://formspree.io/f/xnqkvpzy
+        -->
+        <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+            
+            <!-- Hidden fields: route payload to DGD system -->
+            <input type="hidden" name="_subject" value="DGD CONSULT AU — New Inquiry">
+            <input type="hidden" name="_next" value="{{ url_for('index') }}">
+            
+            <!--
+            Optional: Custom redirect after submission
+            <input type="hidden" name="_next" value="https://yourdomain.com/thanks">
+            -->
+            
+            <!-- Sender Identity -->
+            <div class="grid grid-2">
+                <div class="form-group">
+                    <label class="form-label">Full Name *</label>
+                    <input type="text" name="name" class="form-input" placeholder="Your full name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Address *</label>
+                    <input type="email" name="email" class="form-input" placeholder="your@email.com" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" name="phone" class="form-input" placeholder="+61 400 000 000">
+            </div>
+            
+            <!-- Inquiry Classification -->
+            <div class="form-group">
+                <label class="form-label">Inquiry Type</label>
+                <select name="inquiry_type" class="form-select">
+                    <option value="general">General Inquiry</option>
+                    <option value="services">Service Information</option>
+                    <option value="booking">Booking Request</option>
+                    <option value="feedback">Feedback</option>
+                    <option value="complaint">Complaint</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <!-- Message Body -->
+            <div class="form-group">
+                <label class="form-label">Message *</label>
+                <textarea name="message" class="form-textarea" rows="6" placeholder="Please describe your inquiry in detail..." required></textarea>
+            </div>
+            
+            <!-- Honeypot field: anti-spam protection -->
+            <div class="honeypot-field">
+                <input type="text" name="_gotcha" tabindex="-1" autocomplete="off">
+            </div>
+            
+            <!-- Optional: Custom reply-to -->
+            <input type="hidden" name="_replyto" value="">
+            
+            <div class="mt-lg">
+                <button type="submit" class="btn btn-lg" style="width: 100%;">
+                    Submit to DGD CONSULT AU
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Information Panel -->
+    <div>
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Direct Contact</div>
+            </div>
+            
+            <div style="margin-bottom: var(--space-lg);">
+                <div class="text-xs uppercase font-bold tracking-wide opacity-50 mb-sm">Office</div>
+                <div class="font-semibold">DGD CONSULT AU</div>
+                <div class="text-sm mt-sm">Consulting & Workforce Solutions</div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div style="margin-top: var(--space-lg);">
+                <div class="text-xs uppercase font-bold tracking-wide opacity-50 mb-sm">Response Time</div>
+                <div class="text-sm">We aim to respond to all inquiries within 24 business hours.</div>
+            </div>
+            
+            <div style="margin-top: var(--space-lg);">
+                <div class="text-xs uppercase font-bold tracking-wide opacity-50 mb-sm">Privacy</div>
+                <div class="text-sm">Your information is handled in accordance with Australian privacy principles.</div>
+            </div>
+        </div>
+        
+        <div class="card mt-lg">
+            <div class="card-header">
+                <div class="card-title">Already a Client?</div>
+            </div>
+            <div class="text-sm mb-md">Access your service portal for faster communication.</div>
+            <a href="{{ url_for('client.login') }}" class="btn" style="width: 100%;">Client Portal →</a>
+        </div>
+    </div>
+</div>
+
+<!-- Formspree Integration Notes -->
+<div class="formspree-disclaimer mt-lg">
+    <strong>System Note:</strong> This form submits directly to Formspree infrastructure. 
+    Submissions are forwarded to the DGD administrative team and logged in the message system. 
+    For sensitive matters, please use the secure client portal.
+</div>
+{% endblock %}

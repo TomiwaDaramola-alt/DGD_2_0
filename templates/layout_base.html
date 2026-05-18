@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0a1628">
+    <title>{% block title %}DGD CONSULT AU{% endblock %}</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    {% block extra_head %}{% endblock %}
+
+    <style>
+        /* Force hidden by default */
+        .ui-mobile-overlay, .ui-mobile-drawer {
+            display: none !important;
+            visibility: hidden !important;
+        }
+
+        /* Responsive Breakpoint: Only run on screens under 992px width */
+        @media (max-width: 991.98px) {
+            /* 1. Reset Hamburger defaults to guarantee visibility and clickable zone */
+            button#hamburgerToggle {
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+                width: 30px !important;
+                height: 20px !important;
+                background: transparent !important;
+                border: none !important;
+                cursor: pointer !important;
+                padding: 0 !important;
+                z-index: 100001 !important;
+                position: relative !important;
+            }
+
+            button#hamburgerToggle span {
+                display: block !important;
+                width: 100% !important;
+                height: 3px !important;
+                background-color: #ffffff !important; /* Forces bars white */
+                border-radius: 2px !important;
+                transition: transform 0.3s ease, opacity 0.3s ease !important;
+            }
+
+            /* Transform hamburger icon into an X when menu is active */
+            button#hamburgerToggle.is-active span:nth-child(1) {
+                transform: translateY(8px) rotate(45deg) !important;
+            }
+            button#hamburgerToggle.is-active span:nth-child(2) {
+                opacity: 0 !important;
+            }
+            button#hamburgerToggle.is-active span:nth-child(3) {
+                transform: translateY(-9px) rotate(-45deg) !important;
+            }
+
+            /* 2. Dimmed Backing Mask */
+            div#drawerOverlay.ui-mobile-overlay {
+                display: block !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                background: rgba(4, 9, 20, 0.8) !important;
+                z-index: 999998 !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+                visibility: visible !important;
+                transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            }
+
+            div#drawerOverlay.ui-mobile-overlay.is-visible {
+                opacity: 1 !important;
+                pointer-events: auto !important;
+            }
+
+            /* 3. The Slide out Navigation Engine Panel */
+            aside#mobileDrawer.ui-mobile-drawer {
+                display: flex !important;
+                visibility: visible !important;
+                position: fixed !important;
+                top: 0 !important;
+                right: 0 !important;
+                width: 85% !important;
+                max-width: 340px !important;
+                height: 100vh !important;
+                background: #0a1628 !important; /* Deep navy corporate color */
+                z-index: 999999 !important;
+                flex-direction: column !important;
+                transform: translateX(105%) !important; /* Slides out completely right */
+                transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+                box-shadow: -10px 0 40px rgba(0,0,0,0.4) !important;
+                border-left: 1px solid rgba(255,255,255,0.05) !important;
+            }
+
+            aside#mobileDrawer.ui-mobile-drawer.is-open {
+                transform: translateX(0) !important; /* Slides entry back into screen view */
+            }
+
+            /* Inner Structural Containers */
+            .ui-drawer-header {
+                padding: 24px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+            }
+
+            .ui-drawer-nav {
+                display: flex !important;
+                flex-direction: column !important;
+                padding: 24px 16px !important;
+                gap: 4px !important;
+                overflow-y: auto !important;
+                flex-grow: 1 !important;
+            }
+
+            /* Navigation link components override */
+            .ui-drawer-nav a {
+                display: block !important;
+                color: #e2e8f0 !important;
+                text-decoration: none !important;
+                padding: 14px 16px !important;
+                font-size: 16px !important;
+                font-weight: 500 !important;
+                border-radius: 8px !important;
+                transition: all 0.2s ease !important;
+            }
+
+            .ui-drawer-nav a:hover, .ui-drawer-nav a:active {
+                background: rgba(255, 255, 255, 0.05) !important;
+                color: #ffffff !important;
+                padding-left: 20px !important;
+            }
+
+            .ui-drawer-nav .drawer-link-accent {
+                color: #ffb800 !important; /* Highlighting Visa application tracking link */
+                font-weight: 600 !important;
+                background: rgba(255, 184, 0, 0.05) !important;
+            }
+
+            .ui-drawer-nav .drawer-link-cta {
+                background: #0052cc !important;
+                color: #ffffff !important;
+                text-align: center !important;
+                font-weight: 600 !important;
+                margin-top: 12px !important;
+                box-shadow: 0 4px 12px rgba(0, 82, 204, 0.2) !important;
+            }
+
+            .ui-drawer-nav .drawer-link-cta:hover {
+                background: #0066ff !important;
+            }
+
+            .ui-drawer-divider {
+                height: 1px !important;
+                background: rgba(255,255,255,0.08) !important;
+                margin: 16px 16px !important;
+            }
+
+            .ui-drawer-portals {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 2px !important;
+            }
+
+            .ui-drawer-section-title {
+                color: #64748b !important;
+                font-size: 11px !important;
+                font-weight: 700 !important;
+                text-transform: uppercase !important;
+                letter-spacing: 1.5px !important;
+                padding: 0 16px 8px 16px !important;
+            }
+
+            .ui-drawer-nav .drawer-link-sub {
+                font-size: 14px !important;
+                color: #94a3b8 !important;
+                padding: 10px 16px !important;
+            }
+            
+            button.drawer-close {
+                background: none !important;
+                border: none !important;
+                color: #94a3b8 !important;
+                font-size: 22px !important;
+                cursor: pointer !important;
+                padding: 4px !important;
+            }
+            button.drawer-close:hover {
+                color: #ffffff !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header" id="siteHeader">
+        <div class="header-container">
+            <a href="{{ url_for('public.index') }}" class="brand-lockup">
+                <div class="brand-mark">DGD</div>
+                <div class="brand-text">
+                    <span class="brand-name">CONSULT AU</span>
+                    <span class="brand-tag">Migration · Workforce · Training</span>
+                </div>
+            </a>
+            
+            <nav class="desktop-nav">
+                <a href="{{ url_for('public.index') }}" 
+                   class="nav-link {% if request.endpoint == 'public.index' %}active{% endif %}">Home</a>
+                <a href="{{ url_for('public.about') }}" 
+                   class="nav-link {% if request.endpoint == 'public.about' %}active{% endif %}">About</a>
+                <a href="{{ url_for('public.services') }}" 
+                   class="nav-link {% if request.endpoint == 'public.services' %}active{% endif %}">Services</a>
+                <a href="{{ url_for('public.training') }}" 
+                   class="nav-link {% if request.endpoint == 'public.training' %}active{% endif %}">Training</a>
+                <a href="{{ url_for('public.testimonials') }}" 
+                   class="nav-link {% if request.endpoint == 'public.testimonials' %}active{% endif %}">Reviews</a>
+                <a href="{{ url_for('public.visa_600') }}" 
+                   class="nav-link nav-link-accent">Visa 600</a>
+            </nav>
+            
+            <div class="header-actions">
+                <a href="{{ url_for('public.register_public') }}" class="btn btn-primary btn-sm">Get Started</a>
+                
+                <button class="hamburger" id="hamburgerToggle" aria-label="Open menu" aria-expanded="false">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <div class="ui-mobile-overlay" id="drawerOverlay"></div>
+    
+    <aside class="ui-mobile-drawer" id="mobileDrawer" aria-hidden="true">
+        <div class="ui-drawer-header">
+            <div class="brand-lockup">
+                <div class="brand-mark">DGD</div>
+                <div class="brand-text">
+                    <span class="brand-name" style="color:#ffffff !important;">CONSULT AU</span>
+                </div>
+            </div>
+            <button class="drawer-close" id="drawerClose" aria-label="Close menu">✕</button>
+        </div>
+        
+        <nav class="ui-drawer-nav">
+            <a href="{{ url_for('public.index') }}">Home</a>
+            <a href="{{ url_for('public.about') }}">About Us</a>
+            <a href="{{ url_for('public.services') }}">Our Services</a>
+            <a href="{{ url_for('public.training') }}">Training Modules</a>
+            <a href="{{ url_for('public.testimonials') }}">Client Reviews</a>
+            <a href="{{ url_for('public.visa_600') }}" class="drawer-link-accent">Visa 600 Application</a>
+            
+            <div class="ui-drawer-divider"></div>
+            
+            <a href="{{ url_for('public.register_public') }}" class="drawer-link-cta">Register Now →</a>
+            
+            <div class="ui-drawer-divider"></div>
+            
+            <div class="ui-drawer-portals">
+                <span class="ui-drawer-section-title">Portals</span>
+                <a href="{{ url_for('client.login') }}" class="drawer-link-sub">Client Login</a>
+                <a href="{{ url_for('staff.login') }}" class="drawer-link-sub">Staff Portal</a>
+                <a href="{{ url_for('admin.login') }}" class="drawer-link-sub">Admin Access</a>
+            </div>
+        </nav>
+    </aside>
+    
+    <main class="site-main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.getElementById('hamburgerToggle');
+            const mobileDrawer = document.getElementById('mobileDrawer');
+            const drawerOverlay = document.getElementById('drawerOverlay');
+            const drawerClose = document.getElementById('drawerClose');
+
+            function openMenu() {
+                hamburger.setAttribute('aria-expanded', 'true');
+                hamburger.classList.add('is-active');
+                mobileDrawer.setAttribute('aria-hidden', 'false');
+                mobileDrawer.classList.add('is-open');
+                drawerOverlay.classList.add('is-visible');
+            }
+
+            function closeMenu() {
+                hamburger.setAttribute('aria-expanded', 'false');
+                hamburger.classList.remove('is-active');
+                mobileDrawer.setAttribute('aria-hidden', 'true');
+                mobileDrawer.classList.remove('is-open');
+                drawerOverlay.classList.remove('is-visible');
+            }
+
+            if (hamburger) hamburger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if(mobileDrawer.classList.contains('is-open')) {
+                    closeMenu();
+                } else {
+                    openMenu();
+                }
+            });
+            
+            if (drawerClose) drawerClose.addEventListener('click', closeMenu);
+            if (drawerOverlay) drawerOverlay.addEventListener('click', closeMenu);
+        });
+    </script>
+    <script src="/static/js/brain.js"></script>
+</body>
+</html>
+

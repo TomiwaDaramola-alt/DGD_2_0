@@ -1,0 +1,1166 @@
+<!--
+=============================================================================
+DGD 2.0 — DGD CONSULT AU
+Phase 4: Interactive Visa 600 Intake Form Engine
+Location: templates/visa_600.html
+
+Features: Multi-step wizard, real-time validation, document checklist,
+AI-assisted eligibility scoring, direct database integration prep.
+=============================================================================
+-->
+{% extends "layout_base.html" %}
+
+{% block title %}Visitor Visa 600 — DGD CONSULT AU{% endblock %}
+
+{% block content %}
+
+<section class="section section-navy" style="padding-top: var(--space-32); padding-bottom: var(--space-16);">
+    <div class="section-container">
+        <div class="section-header" style="margin-bottom: var(--space-8);">
+            <span class="section-label">Subclass 600</span>
+            <h2 class="section-title">Visitor Visa Application</h2>
+            <p class="section-desc">Complete our intelligent intake form. We'll assess your eligibility, estimate processing time, and prepare your application strategy.</p>
+        </div>
+    </div>
+</section>
+
+<section class="section section-alt" style="padding-top: var(--space-8);">
+    <div class="section-container">
+        <div class="visa-wizard">
+            <!-- Progress Bar -->
+            <div class="wizard-progress">
+                <div class="wizard-step active" data-step="1">
+                    <div class="wizard-step-num">1</div>
+                    <div class="wizard-step-label">Eligibility</div>
+                </div>
+                <div class="wizard-connector"></div>
+                <div class="wizard-step" data-step="2">
+                    <div class="wizard-step-num">2</div>
+                    <div class="wizard-step-label">Personal Details</div>
+                </div>
+                <div class="wizard-connector"></div>
+                <div class="wizard-step" data-step="3">
+                    <div class="wizard-step-num">3</div>
+                    <div class="wizard-step-label">Travel Plans</div>
+                </div>
+                <div class="wizard-connector"></div>
+                <div class="wizard-step" data-step="4">
+                    <div class="wizard-step-num">4</div>
+                    <div class="wizard-step-label">Documents</div>
+                </div>
+                <div class="wizard-connector"></div>
+                <div class="wizard-step" data-step="5">
+                    <div class="wizard-step-num">5</div>
+                    <div class="wizard-step-label">Review & Pay</div>
+                </div>
+            </div>
+            
+            <form class="wizard-form" id="visa600Form" method="POST" action="/client/register">
+
+
+                
+                <!-- STEP 1: Eligibility -->
+                <div class="wizard-panel active" data-panel="1">
+                    <div class="wizard-panel-header">
+                        <h3 class="wizard-panel-title">Eligibility Assessment</h3>
+                        <p class="wizard-panel-desc">Answer these questions to determine your visa stream and estimated success probability.</p>
+                    </div>
+                    
+                    <div class="eligibility-grid">
+                        <div class="eligibility-card" data-stream="tourist">
+                            <div class="eligibility-icon">🏖️</div>
+                            <h4 class="eligibility-title">Tourist Stream</h4>
+                            <p class="eligibility-desc">Holiday, sightseeing, visiting friends. No work rights. Up to 12 months stay.</p>
+                            <div class="eligibility-select">
+                                <input type="radio" name="visa_stream" value="tourist" id="streamTourist" required>
+                                <label for="streamTourist" class="btn btn-secondary btn-block">Select This Stream</label>
+                            </div>
+                        </div>
+                        
+                        <div class="eligibility-card" data-stream="business">
+                            <div class="eligibility-icon">💼</div>
+                            <h4 class="eligibility-title">Business Visitor</h4>
+                            <p class="eligibility-desc">Conferences, negotiations, exploratory business visits. No work rights.</p>
+                            <div class="eligibility-select">
+                                <input type="radio" name="visa_stream" value="business" id="streamBusiness">
+                                <label for="streamBusiness" class="btn btn-secondary btn-block">Select This Stream</label>
+                            </div>
+                        </div>
+                        
+                        <div class="eligibility-card" data-stream="family">
+                            <div class="eligibility-icon">👨‍👩‍👧</div>
+                            <h4 class="eligibility-title">Sponsored Family</h4>
+                            <p class="eligibility-desc">Family member in Australia sponsors your visit. Bond may be required.</p>
+                            <div class="eligibility-select">
+                                <input type="radio" name="visa_stream" value="family" id="streamFamily">
+                                <label for="streamFamily" class="btn btn-secondary btn-block">Select This Stream</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="eligibility-questions">
+                        <div class="form-group">
+                            <label class="form-label">Have you held an Australian visa before?</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="previous_visa" value="yes" required>
+                                    <span>Yes</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="previous_visa" value="no">
+                                    <span>No</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Do you have sufficient funds for your stay? (AUD $5,000+ recommended)</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="funds" value="yes" required>
+                                    <span>Yes, I can demonstrate funds</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="funds" value="no">
+                                    <span>I need guidance on this</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Do you have strong ties to your home country? (Job, property, family)</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="home_ties" value="strong" required>
+                                    <span>Strong ties — job, property, family</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="home_ties" value="moderate">
+                                    <span>Moderate ties</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="home_ties" value="limited">
+                                    <span>Limited ties — need advice</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="eligibility-score" id="eligibilityScore" style="display: none;">
+                        <div class="score-ring">
+                            <svg viewBox="0 0 100 100">
+                                <circle class="score-track" cx="50" cy="50" r="45"/>
+                                <circle class="score-fill" id="scoreFill" cx="50" cy="50" r="45"/>
+                            </svg>
+                            <div class="score-number" id="scoreNumber">0%</div>
+                        </div>
+                        <div class="score-text">
+                            <h4>Estimated Success Probability</h4>
+                            <p id="scoreMessage">Complete the questions above to see your score.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="wizard-actions">
+                        <button type="button" class="btn btn-primary btn-lg wizard-next" data-next="2">Continue to Personal Details →</button>
+                    </div>
+                </div>
+                
+                <!-- STEP 2: Personal Details -->
+                <div class="wizard-panel" data-panel="2">
+                    <div class="wizard-panel-header">
+                        <h3 class="wizard-panel-title">Personal Information</h3>
+                        <p class="wizard-panel-desc">Enter your details exactly as they appear on your passport.</p>
+                    </div>
+                    
+                    <div class="grid grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Given Names *</label>
+                            <input type="text" name="given_names" class="form-input" placeholder="As on passport" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Family Name *</label>
+                            <input type="text" name="family_name" class="form-input" placeholder="As on passport" required>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Date of Birth *</label>
+                            <input type="date" name="dob" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Country of Citizenship *</label>
+                            <select name="citizenship" class="form-select" required>
+                                <option value="">Select country...</option>
+                                <option value="IN">India</option>
+                                <option value="CN">China</option>
+                                <option value="PH">Philippines</option>
+                                <option value="GB">United Kingdom</option>
+                                <option value="US">United States</option>
+                                <option value="CA">Canada</option>
+                                <option value="NZ">New Zealand</option>
+                                <option value="ZA">South Africa</option>
+                                <option value="PK">Pakistan</option>
+                                <option value="BD">Bangladesh</option>
+                                <option value="LK">Sri Lanka</option>
+                                <option value="NP">Nepal</option>
+                                <option value="OTHER">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Passport Number *</label>
+                            <input type="text" name="passport_number" class="form-input" placeholder="e.g., P12345678" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Passport Expiry *</label>
+                            <input type="date" name="passport_expiry" class="form-input" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Email Address *</label>
+                        <input type="email" name="email" class="form-input" placeholder="your@email.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Phone Number *</label>
+                        <input type="tel" name="phone" class="form-input" placeholder="+61 400 000 000" required>
+                    </div>
+                    
+                    <div class="wizard-actions">
+                        <button type="button" class="btn btn-ghost wizard-prev" data-prev="1">← Back</button>
+                        <button type="button" class="btn btn-primary btn-lg wizard-next" data-next="3">Continue →</button>
+                    </div>
+                </div>
+                
+                <!-- STEP 3: Travel Plans -->
+                <div class="wizard-panel" data-panel="3">
+                    <div class="wizard-panel-header">
+                        <h3 class="wizard-panel-title">Travel Itinerary</h3>
+                        <p class="wizard-panel-desc">Tell us about your intended travel dates and purpose.</p>
+                    </div>
+                    
+                    <div class="grid grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Intended Arrival Date *</label>
+                            <input type="date" name="arrival_date" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Intended Departure Date *</label>
+                            <input type="date" name="departure_date" class="form-input" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Purpose of Visit *</label>
+                        <textarea name="purpose" class="form-textarea" rows="4" placeholder="Describe your travel purpose in detail..." required></textarea>
+                        <div class="form-hint">Be specific: tourism destinations, business meetings, family events, etc.</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Planned Accommodation in Australia</label>
+                        <input type="text" name="accommodation" class="form-input" placeholder="Hotel name, friend/relative address, etc.">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Do you have health insurance for your stay?</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="health_insurance" value="yes">
+                                <span>Yes, I have Overseas Visitor Health Cover</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="health_insurance" value="no">
+                                <span>No, I need assistance arranging this</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="wizard-actions">
+                        <button type="button" class="btn btn-ghost wizard-prev" data-prev="2">← Back</button>
+                        <button type="button" class="btn btn-primary btn-lg wizard-next" data-next="4">Continue →</button>
+                    </div>
+                </div>
+                
+                <!-- STEP 4: Documents -->
+                <div class="wizard-panel" data-panel="4">
+                    <div class="wizard-panel-header">
+                        <h3 class="wizard-panel-title">Document Checklist</h3>
+                        <p class="wizard-panel-desc">Upload or confirm you have these essential documents ready.</p>
+                    </div>
+                    
+                    <div class="doc-checklist">
+                        <label class="doc-item">
+                            <input type="checkbox" name="doc_passport" class="doc-checkbox" checked disabled>
+                            <div class="doc-info">
+                                <div class="doc-name">Valid Passport</div>
+                                <div class="doc-desc">Must be valid for 6+ months beyond stay</div>
+                            </div>
+                            <span class="doc-status required">Required</span>
+                        </label>
+                        
+                        <label class="doc-item">
+                            <input type="checkbox" name="doc_photo" class="doc-checkbox">
+                            <div class="doc-info">
+                                <div class="doc-name">Passport-Sized Photo</div>
+                                <div class="doc-desc">Recent, white background, 35x45mm</div>
+                            </div>
+                            <span class="doc-status required">Required</span>
+                        </label>
+                        
+                        <label class="doc-item">
+                            <input type="checkbox" name="doc_bank" class="doc-checkbox">
+                            <div class="doc-info">
+                                <div class="doc-name">Bank Statements (3 months)</div>
+                                <div class="doc-desc">Proof of sufficient funds</div>
+                            </div>
+                            <span class="doc-status required">Required</span>
+                        </label>
+                        
+                        <label class="doc-item">
+                            <input type="checkbox" name="doc_employment" class="doc-checkbox">
+                            <div class="doc-info">
+                                <div class="doc-name">Employment Letter / Business Registration</div>
+                                <div class="doc-desc">Proof of ties to home country</div>
+                            </div>
+                            <span class="doc-status recommended">Recommended</span>
+                        </label>
+                        
+                        <label class="doc-item">
+                            <input type="checkbox" name="doc_itinerary" class="doc-checkbox">
+                            <div class="doc-info">
+                                <div class="doc-name">Travel Itinerary / Flight Booking</div>
+                                <div class="doc-desc">Not mandatory but strengthens application</div>
+                            </div>
+                            <span class="doc-status optional">Optional</span>
+                        </label>
+                        
+                        <label class="doc-item">
+                            <input type="checkbox" name="doc_invitation" class="doc-checkbox">
+                            <div class="doc-info">
+                                <div class="doc-name">Invitation Letter (if visiting family/friends)</div>
+                                <div class="doc-desc">Required for Sponsored Family stream</div>
+                            </div>
+                            <span class="doc-status conditional">If applicable</span>
+                        </label>
+                    </div>
+                    
+                    <div class="wizard-actions">
+                        <button type="button" class="btn btn-ghost wizard-prev" data-prev="3">← Back</button>
+                        <button type="button" class="btn btn-primary btn-lg wizard-next" data-next="5">Continue →</button>
+                    </div>
+                </div>
+                
+                <!-- STEP 5: Review & Payment -->
+                <div class="wizard-panel" data-panel="5">
+                    <div class="wizard-panel-header">
+                        <h3 class="wizard-panel-title">Review & Submit</h3>
+                        <p class="wizard-panel-desc">Review your details and proceed to payment to engage our services.</p>
+                    </div>
+                    
+                    <div class="review-summary" id="reviewSummary">
+                        <!-- Populated by JS -->
+                        <div class="review-loading">Loading your summary...</div>
+                    </div>
+                    
+                    <!-- AI Payment Widget Container -->
+                    <div class="payment-widget-container" id="paymentWidgetContainer">
+                        <div class="payment-widget-header">
+                            <div class="payment-widget-icon">💳</div>
+                            <div>
+                                <h4>Service Fee Payment</h4>
+                                <p class="payment-widget-desc">Professional visa assistance fee</p>
+                            </div>
+                        </div>
+                        <div id="aiPaymentMount"></div>
+                    </div>
+                    
+                               <div class="wizard-actions">
+                        <button type="button" class="btn btn-ghost wizard-prev" data-prev="4">← Back</button>
+                        <button type="submit" class="btn btn-primary btn-xl">Submit Application & Pay →</button>
+                    </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<style>
+.visa-wizard {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: var(--radius-2xl);
+    border: 1px solid var(--color-border-light);
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
+}
+
+.wizard-progress {
+    display: flex;
+    align-items: center;
+    padding: var(--space-6) var(--space-8);
+    background: var(--slate-50);
+    border-bottom: 1px solid var(--color-border-light);
+    overflow-x: auto;
+    gap: var(--space-2);
+}
+
+.wizard-step {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-shrink: 0;
+    opacity: 0.4;
+    transition: all var(--transition-base);
+}
+
+.wizard-step.active {
+    opacity: 1;
+}
+
+.wizard-step.completed .wizard-step-num {
+    background: linear-gradient(135deg, var(--blue-500), var(--blue-600));
+    color: white;
+}
+
+.wizard-step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    background: var(--slate-200);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--color-text-muted);
+    transition: all var(--transition-base);
+}
+
+.wizard-step-label {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text);
+    white-space: nowrap;
+}
+
+.wizard-connector {
+    flex: 1;
+    min-width: 20px;
+    height: 2px;
+    background: var(--slate-200);
+    border-radius: var(--radius-full);
+    margin: 0 var(--space-2);
+}
+
+.wizard-connector.completed {
+    background: linear-gradient(90deg, var(--blue-500), var(--blue-600));
+}
+
+.wizard-panel {
+    display: none;
+    padding: var(--space-8);
+    animation: fadeInUp 0.4s ease-out;
+}
+
+.wizard-panel.active {
+    display: block;
+}
+
+.wizard-panel-header {
+    margin-bottom: var(--space-8);
+}
+
+.wizard-panel-title {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    color: var(--navy-950);
+    margin-bottom: var(--space-2);
+}
+
+.wizard-panel-desc {
+    color: var(--color-text-light);
+    font-size: var(--text-base);
+}
+
+.wizard-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--space-10);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border-light);
+}
+
+/* Eligibility Cards */
+.eligibility-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+}
+
+@media (max-width: 768px) {
+    .eligibility-grid { grid-template-columns: 1fr; }
+}
+
+.eligibility-card {
+    border: 2px solid var(--color-border-light);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    text-align: center;
+    transition: all var(--transition-base);
+    cursor: pointer;
+    position: relative;
+}
+
+.eligibility-card:hover {
+    border-color: var(--blue-300);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.eligibility-card.selected {
+    border-color: var(--blue-600);
+    background: var(--blue-50);
+    box-shadow: var(--shadow-glow);
+}
+
+.eligibility-icon {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-4);
+}
+
+.eligibility-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--navy-950);
+    margin-bottom: var(--space-2);
+}
+
+.eligibility-desc {
+    font-size: var(--text-sm);
+    color: var(--color-text-light);
+    line-height: 1.6;
+    margin-bottom: var(--space-4);
+}
+
+.eligibility-select input {
+    position: absolute;
+    opacity: 0;
+}
+
+.eligibility-select label {
+    cursor: pointer;
+}
+
+.eligibility-card.selected .eligibility-select label {
+    background: linear-gradient(135deg, var(--blue-500), var(--blue-600));
+    color: white;
+    border-color: transparent;
+}
+
+/* Score Ring */
+.eligibility-score {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    padding: var(--space-6);
+    background: var(--slate-50);
+    border-radius: var(--radius-xl);
+    margin-bottom: var(--space-8);
+}
+
+.score-ring {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
+}
+
+.score-ring svg {
+    transform: rotate(-90deg);
+    width: 100%;
+    height: 100%;
+}
+
+.score-track {
+    fill: none;
+    stroke: var(--slate-200);
+    stroke-width: 8;
+}
+
+.score-fill {
+    fill: none;
+    stroke: url(#scoreGradient);
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 283;
+    stroke-dashoffset: 283;
+    transition: stroke-dashoffset 1s ease-out;
+}
+
+.score-number {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-xl);
+    font-weight: 800;
+    color: var(--blue-600);
+}
+
+.score-text h4 {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--navy-950);
+    margin-bottom: var(--space-1);
+}
+
+.score-text p {
+    font-size: var(--text-sm);
+    color: var(--color-text-light);
+}
+
+/* Radio Groups */
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: var(--text-sm);
+}
+
+.radio-option:hover {
+    background: var(--slate-50);
+    border-color: var(--blue-300);
+}
+
+.radio-option input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--blue-600);
+}
+
+/* Document Checklist */
+.doc-checklist {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-8);
+}
+
+.doc-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.doc-item:hover {
+    background: var(--slate-50);
+    border-color: var(--blue-200);
+}
+
+.doc-checkbox {
+    width: 22px;
+    height: 22px;
+    accent-color: var(--blue-600);
+    flex-shrink: 0;
+}
+
+.doc-info {
+    flex: 1;
+}
+
+.doc-name {
+    font-weight: 600;
+    font-size: var(--text-sm);
+    color: var(--navy-950);
+    margin-bottom: 2px;
+}
+
+.doc-desc {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+}
+
+.doc-status {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-full);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+}
+
+.doc-status.required {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.doc-status.recommended {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.doc-status.optional {
+    background: #e0e7ff;
+    color: #4338ca;
+}
+
+.doc-status.conditional {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+/* Payment Widget */
+.payment-widget-container {
+    margin: var(--space-8) 0;
+    padding: var(--space-6);
+    background: linear-gradient(135deg, var(--slate-50), white);
+    border: 2px dashed var(--blue-200);
+    border-radius: var(--radius-2xl);
+}
+
+.payment-widget-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+
+.payment-widget-icon {
+    font-size: var(--text-3xl);
+}
+
+.payment-widget-desc {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+/* ==========================================================================
+   DGD 2.0 — Form Wizard & Interactive Form Components
+   ========================================================================== */
+
+.visa-wizard {
+    background: #ffffff;
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-8);
+    box-shadow: var(--shadow-md);
+    margin-top: var(--space-4);
+}
+
+/* Wizard Progress Indicators */
+.wizard-progress {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    margin-bottom: var(--space-10);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.wizard-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+    opacity: 0.4;
+    transition: opacity var(--transition-base);
+}
+
+.wizard-step.active {
+    opacity: 1;
+}
+
+.wizard-step.completed {
+    opacity: 0.85;
+}
+
+.wizard-step-number {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
+    background: var(--slate-200);
+    color: var(--navy-950);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-2);
+    border: 2px solid transparent;
+    transition: all var(--transition-base);
+}
+
+.wizard-step.active .wizard-step-number {
+    background: var(--blue-600);
+    color: #ffffff;
+    border-color: var(--blue-200);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+}
+
+.wizard-step.completed .wizard-step-number {
+    background: var(--navy-950);
+    color: #ffffff;
+}
+
+.wizard-step-label {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--color-text);
+    text-align: center;
+}
+
+/* Multi-step Panels View Control */
+.wizard-panel {
+    display: none;
+}
+
+.wizard-panel.active {
+    display: block;
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+/* Form Layout Foundations */
+.wizard-form .form-section-title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--navy-950);
+    margin-bottom: var(--space-2);
+}
+
+.wizard-form .form-section-desc {
+    font-size: var(--text-sm);
+    color: var(--color-text-light);
+    margin-bottom: var(--space-6);
+}
+
+.wizard-form .grid {
+    display: grid;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+.wizard-form .grid-2 { grid-template-columns: repeat(2, 1fr); }
+.wizard-form .grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+@media (max-width: 768px) {
+    .wizard-form .grid-2, 
+    .wizard-form .grid-3 { 
+        grid-template-columns: 1fr; 
+    }
+    .wizard-progress {
+        flex-direction: column;
+        gap: var(--space-4);
+        align-items: flex-start;
+    }
+}
+
+.wizard-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1.5);
+    margin-bottom: var(--space-4);
+}
+
+.wizard-form .form-label {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--navy-950);
+}
+
+/* Input Fields & Fieldsets */
+.wizard-form .form-input,
+.wizard-form .form-select,
+.wizard-form .form-textarea {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-sm);
+    background-color: var(--slate-50);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-lg);
+    color: var(--color-text);
+    transition: all var(--transition-base);
+}
+
+.wizard-form .form-input:focus,
+.wizard-form .form-select:focus,
+.wizard-form .form-textarea:focus {
+    outline: none;
+    background-color: #ffffff;
+    border-color: var(--blue-500);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Form Actions Button Control Row */
+.wizard-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border-light);
+}
+
+/* Document Upload Checklist Box */
+.document-checklist {
+    background: var(--slate-50);
+    border: 1px dashed var(--color-border-light);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    margin-bottom: var(--space-6);
+}
+
+/* AI Panel Integration Mount Point */
+.review-section {
+    border-left: 3px solid var(--blue-600);
+    padding-left: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+.review-section h5 {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--navy-950);
+    margin: 0 0 var(--space-1) 0;
+}
+
+.review-section p {
+    font-size: var(--text-sm);
+    color: var(--color-text-light);
+    margin: 0;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+</style>
+
+<script>
+(function() {
+    'use strict';
+    
+    // Wizard Navigation
+    const form = document.getElementById('visa600Form');
+    const panels = form.querySelectorAll('.wizard-panel');
+    const steps = document.querySelectorAll('.wizard-step');
+    const connectors = document.querySelectorAll('.wizard-connector');
+    const nextBtns = form.querySelectorAll('.wizard-next');
+    const prevBtns = form.querySelectorAll('.wizard-prev');
+    
+    function showPanel(num) {
+        panels.forEach(p => p.classList.remove('active'));
+        steps.forEach((s, i) => {
+            s.classList.remove('active', 'completed');
+            if (i < num - 1) s.classList.add('completed');
+            if (i === num - 1) s.classList.add('active');
+        });
+        connectors.forEach((c, i) => {
+            c.classList.toggle('completed', i < num - 1);
+        });
+        form.querySelector(`[data-panel="${num}"]`).classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    nextBtns.forEach(btn => {
+        btn.addEventListener('click', () => showPanel(parseInt(btn.dataset.next)));
+    });
+    
+    prevBtns.forEach(btn => {
+        btn.addEventListener('click', () => showPanel(parseInt(btn.dataset.prev)));
+    });
+    
+    // Stream Selection
+    const streamCards = document.querySelectorAll('.eligibility-card');
+    streamCards.forEach(card => {
+        card.addEventListener('click', function() {
+            streamCards.forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+            const input = this.querySelector('input[type="radio"]');
+            if (input) input.checked = true;
+            updateScore();
+        });
+    });
+    
+    // Score Calculator
+    function updateScore() {
+        const scoreEl = document.getElementById('eligibilityScore');
+        const fill = document.getElementById('scoreFill');
+        const number = document.getElementById('scoreNumber');
+        const message = document.getElementById('scoreMessage');
+        
+        let score = 0;
+        const stream = form.querySelector('input[name="visa_stream"]:checked')?.value;
+        const funds = form.querySelector('input[name="funds"]:checked')?.value;
+        const ties = form.querySelector('input[name="home_ties"]:checked')?.value;
+        const prev = form.querySelector('input[name="previous_visa"]:checked')?.value;
+        
+        if (stream) score += 25;
+        if (funds === 'yes') score += 25;
+        else if (funds) score += 10;
+        if (ties === 'strong') score += 30;
+        else if (ties === 'moderate') score += 15;
+        else if (ties) score += 5;
+        if (prev === 'yes') score += 20;
+        else if (prev) score += 10;
+        
+        scoreEl.style.display = 'flex';
+        const circumference = 2 * Math.PI * 45;
+        const offset = circumference - (score / 100) * circumference;
+        fill.style.strokeDashoffset = offset;
+        number.textContent = score + '%';
+        
+        if (score >= 80) {
+            message.textContent = 'Excellent eligibility profile. High probability of visa grant. We recommend proceeding with full application.';
+            message.style.color = '#059669';
+        } else if (score >= 60) {
+            message.textContent = 'Good eligibility profile. Some areas may need strengthening. We can advise on documentation strategy.';
+            message.style.color = '#b45309';
+        } else if (score >= 40) {
+            message.textContent = 'Moderate eligibility. Several risk factors identified. We recommend a detailed consultation before lodgement.';
+            message.style.color = '#dc2626';
+        } else {
+            message.textContent = 'Low eligibility score. Significant concerns exist. Please contact us for a detailed assessment before proceeding.';
+            message.style.color = '#dc2626';
+        }
+    }
+    
+    form.querySelectorAll('input[name="funds"], input[name="home_ties"], input[name="previous_visa"]').forEach(input => {
+        input.addEventListener('change', updateScore);
+    });
+    
+    // Review Summary Population
+    function populateReview() {
+        const summary = document.getElementById('reviewSummary');
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+        
+        let html = '<div class="review-sections">';
+        
+        // Stream
+        html += `<div class="review-section">
+            <h5>Visa Stream</h5>
+            <p>${data.visa_stream ? data.visa_stream.charAt(0).toUpperCase() + data.visa_stream.slice(1) : 'Not selected'}</p>
+        </div>`;
+        
+        // Personal
+        html += `<div class="review-section">
+            <h5>Applicant</h5>
+            <p>${data.given_names || ''} ${data.family_name || ''}<br>
+            ${data.citizenship || ''} citizen | DOB: ${data.dob || ''}</p>
+        </div>`;
+        
+        // Travel
+        html += `<div class="review-section">
+            <h5>Travel Period</h5>
+            <p>${data.arrival_date || ''} → ${data.departure_date || ''}</p>
+        </div>`;
+        
+        html += '</div>';
+        summary.innerHTML = html;
+    }
+    
+    // Mount AI Payment Widget on step 5
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.target.classList.contains('active') && mutation.target.dataset.panel === '5') {
+                populateReview();
+                if (window.AIPaymentAssistant && document.getElementById('aiPaymentMount')) {
+                    window.AIPaymentAssistant.mount('aiPaymentMount', {
+                        serviceType: 'visa_600',
+                        baseAmount: 120000, // $1,200 in cents
+                        currency: 'AUD',
+                        description: 'Visitor Visa 600 Professional Assistance'
+                    });
+                }
+            }
+        });
+    });
+    
+        // Intercept form submissions and trigger the secure Paystack checkout window
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const customerEmail = form.querySelector('input[name="email"]')?.value || "payments@dgdconsult.com";
+        const clientFirst = form.querySelector('input[name="given_names"]')?.value || "Applicant";
+        const clientLast = form.querySelector('input[name="family_name"]')?.value || "User";
+
+        const submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Opening Paystack Gateway...";
+        }
+
+        let handler = PaystackPop.setup({
+            key: 'pk_test_your_public_key_here', 
+            email: customerEmail,
+            amount: 120000, 
+            currency: 'ZAR', 
+            callback: function(response) {
+                const inputRef = document.createElement('input');
+                inputRef.type = 'hidden';
+                inputRef.name = 'paystack_reference';
+                inputRef.value = response.reference;
+                form.appendChild(inputRef);
+
+                if (submitBtn) submitBtn.innerText = "Verifying Payment Session...";
+                // Update submission address route to match the client blueprint prefix configuration
+                form.action = "/client/register";
+                form.submit();
+            },
+            onClose: function() {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "Submit Application & Pay →";
+                }
+                alert('Checkout closed. Transaction was not captured.');
+            }
+        });
+
+        handler.openIframe();
+    });
+
+    panels.forEach(panel => {
+
+        observer.observe(panel, { attributes: true, attributeFilter: ['class'] });
+    });
+    
+})();
+</script>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+
+{% endblock %}
