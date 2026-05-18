@@ -7,16 +7,17 @@ db = SQLAlchemy()
 
 def create_app():
     try:
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
         app = Flask(
             __name__,
-            static_folder='../static',
-            template_folder='../templates'
+            static_folder=os.path.join(BASE_DIR, "static"),
+            template_folder=os.path.join(BASE_DIR, "templates")
         )
 
         app.config['SECRET_KEY'] = 'master_switch_secret_9982'
 
-        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        instance_path = os.path.join(base_dir, 'instance')
+        instance_path = os.path.join(BASE_DIR, 'instance')
 
         if not os.path.exists(instance_path):
             os.makedirs(instance_path)
@@ -27,6 +28,10 @@ def create_app():
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
         db.init_app(app)
+
+        print("[OK] Flask initialized")
+        print(f"[OK] Static Folder: {app.static_folder}")
+        print(f"[OK] Template Folder: {app.template_folder}")
 
         from .routes_public import public_bp
         from .routes_client import client_bp
@@ -40,6 +45,7 @@ def create_app():
 
         with app.app_context():
             db.create_all()
+            print("[OK] Database initialized")
 
         @app.route("/health")
         def health():
