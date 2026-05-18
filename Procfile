@@ -1,1 +1,1 @@
-web: gunicorn --workers 4 --threads 2 --bind 0.0.0.0:$PORT ws_entry:app
+web: gunicorn --log-level debug --workers 2 --threads 2 --timeout 120 ws_entry:app

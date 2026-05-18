@@ -1,23 +1,32 @@
-import sys
 import os
+import sys
+import traceback
 
-# FORCE INJECT HARD KEYS DIRECTLY INTO RUNTIME ENVIRONMENT
-os.environ['PAYSTACK_PUBLIC_KEY'] = 'pk_test_a49bd26daf79787b5fde3f01f093a548c00e7665'
-os.environ['PAYSTACK_SECRET_KEY'] = 'sk_test_453e6852331b7018e76017922453975adfa26b65'
-os.environ['FLASK_ENV'] = 'production'
+print("\n========== BOOT START ==========\n")
 
-# Ensure project root is in the system path
-base_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, base_dir)
+try:
+    # FORCE PRODUCTION ENVIRONMENT
+    os.environ['FLASK_ENV'] = 'production'
 
-# Force create the instance folder path
-instance_path = os.path.join(base_dir, 'instance')
-os.makedirs(instance_path, exist_ok=True)
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    sys.path.insert(0, BASE_DIR)
 
-from backend import create_app
+    print(f"[OK] BASE_DIR = {BASE_DIR}")
 
-# Build the application instance
-app = create_app()
+    from backend import create_app
+
+    print("[OK] create_app imported")
+
+    app = create_app()
+
+    print("[OK] Flask app created successfully")
+
+except Exception:
+    print("[CRITICAL] APPLICATION FAILED TO BOOT")
+    traceback.print_exc()
+    raise
+
+print("\n========== BOOT SUCCESS ==========\n")
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
