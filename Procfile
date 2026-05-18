@@ -1,1 +1,1 @@
-web: gunicorn ws_entry:app
+web: gunicorn --workers 4 --threads 2 --bind 0.0.0.0:$PORT ws_entry:app
