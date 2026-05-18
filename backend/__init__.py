@@ -88,3 +88,11 @@ def create_app():
         print("[CRITICAL] Flask factory failed")
         traceback.print_exc()
         raise
+
+# DEBUG ROUTE MAP
+def print_routes(app):
+    print("\n========== ROUTE MAP ==========")
+    for rule in app.url_map.iter_rules():
+        print(f"{rule.endpoint:30s} -> {rule}")
+    print("================================\n")
+
